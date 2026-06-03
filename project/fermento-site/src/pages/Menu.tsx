@@ -4,14 +4,15 @@ import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish, Divider } from '../components/Divider'
 import { MENU } from '../data/content'
+import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
-const TAG_LABELS = { veg: 'Vegetariano', vegan: 'Vegano' }
+const TAG_LABELS: Record<string, string> = { veg: 'Vegetariano', vegan: 'Vegano' }
 
-function DietTag({ tag }) {
+function DietTag({ tag }: { tag: string }) {
   return <span className="diet-tag">{TAG_LABELS[tag] ?? tag}</span>
 }
 
-function MenuItem({ name, desc, price, tags }) {
+function MenuItemRow({ name, desc, price, tags }: MenuItemType) {
   return (
     <div className="menu-item">
       <div>
@@ -28,7 +29,7 @@ function MenuItem({ name, desc, price, tags }) {
   )
 }
 
-function MenuCategory({ cat }) {
+function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
   return (
     <div className="menu-cat" id={cat.id}>
       <div className="menu-cat-head">
@@ -38,7 +39,7 @@ function MenuCategory({ cat }) {
         <p className="note">{cat.note}</p>
       </div>
       <div>
-        {cat.items.map(item => <MenuItem key={item.id} {...item} />)}
+        {cat.items.map(item => <MenuItemRow key={item.id} {...item} />)}
       </div>
     </div>
   )
@@ -47,7 +48,7 @@ function MenuCategory({ cat }) {
 export default function Menu() {
   const [active, setActive] = useState(MENU[0].id)
 
-  function scrollTo(id) {
+  function scrollTo(id: string) {
     setActive(id)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -98,7 +99,7 @@ export default function Menu() {
           <div className="wrap-narrow">
             {MENU.map((cat, i) => (
               <div key={cat.id}>
-                <MenuCategory cat={cat} />
+                <MenuCategorySection cat={cat} />
                 {i < MENU.length - 1 && (
                   <div style={{ margin: 'var(--sp-6) 0' }}>
                     <Divider />

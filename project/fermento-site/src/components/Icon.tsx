@@ -1,7 +1,7 @@
-/* Thin-stroke (1.6px) line icon set — Lucide-style.
-   Functional UI affordances only; brand ornaments come from the logo. */
+import type { CSSProperties } from 'react'
+import type { IconName } from '../types'
 
-const ICON_PATHS = {
+const ICON_PATHS: Record<IconName, string> = {
   plus: "M12 5v14M5 12h14",
   edit: "M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z",
   trash: "M3 6h18 M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6",
@@ -19,14 +19,21 @@ const ICON_PATHS = {
   filter: "M22 3H2l8 9.46V19l4 2v-8.54L22 3Z",
   arrowRight: "M5 12h14M13 5l7 7-7 7",
   logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9",
-};
+}
 
-export default function Icon({ name, size = 18, stroke = 1.6, style }) {
+interface IconProps {
+  name: IconName
+  size?: number
+  stroke?: number
+  style?: CSSProperties
+}
+
+export default function Icon({ name, size = 18, stroke = 1.6, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth={stroke} strokeLinecap="round"
       strokeLinejoin="round" style={style} aria-hidden="true">
-      <path d={ICON_PATHS[name] || ""} />
+      <path d={ICON_PATHS[name] ?? ""} />
     </svg>
-  );
+  )
 }

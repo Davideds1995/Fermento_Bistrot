@@ -5,7 +5,13 @@ import ReservationForm from '../components/ReservationForm'
 import { Divider, Flourish } from '../components/Divider'
 import { COPY, ATMOSPHERE } from '../data/content'
 
-function Plate({ title, desc, num }) {
+interface PlateProps {
+  title: string
+  desc: string
+  num: string
+}
+
+function Plate({ title, desc, num }: PlateProps) {
   return (
     <div className="feature-item">
       <div className="plate plate-tall">

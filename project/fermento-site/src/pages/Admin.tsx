@@ -2,15 +2,16 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { RESERVATIONS, formatDate } from '../data/content'
+import type { Reservation } from '../types'
 
 const PASS = 'admin'
 
 /* ── Gate ── */
-function Gate({ onUnlock }) {
+function Gate({ onUnlock }: { onUnlock: () => void }) {
   const [pw, setPw] = useState('')
   const [err, setErr] = useState(false)
 
-  function submit(e) {
+  function submit(e: React.FormEvent) {
     e.preventDefault()
     if (pw === PASS) { onUnlock() } else { setErr(true); setPw('') }
   }
@@ -46,26 +47,26 @@ function Gate({ onUnlock }) {
   )
 }
 
-const STATUS_LABELS = {
+const STATUS_LABELS: Record<Reservation['status'], string> = {
   confirmed: 'Confermata',
   pending: 'In attesa',
   cancelled: 'Cancellata',
 }
 
-function StatusBadge({ status }) {
+function StatusBadge({ status }: { status: Reservation['status'] }) {
   return (
     <span className={`badge badge-${status}`}>
       <span className="dot" />
-      {STATUS_LABELS[status] ?? status}
+      {STATUS_LABELS[status]}
     </span>
   )
 }
 
 /* ── Admin panel ── */
 function Panel() {
-  const [reservations, setReservations] = useState(RESERVATIONS)
+  const [reservations, setReservations] = useState<Reservation[]>(RESERVATIONS)
   const [dateFilter, setDateFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | Reservation['status']>('all')
 
   const filtered = useMemo(() => {
     return reservations
@@ -74,7 +75,7 @@ function Panel() {
       .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   }, [reservations, dateFilter, statusFilter])
 
-  function setStatus(id, status) {
+  function setStatus(id: string, status: Reservation['status']) {
     setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r))
   }
 
@@ -84,6 +85,8 @@ function Panel() {
     pending: reservations.filter(r => r.status === 'pending').length,
     people: reservations.filter(r => r.status !== 'cancelled').reduce((s, r) => s + r.people, 0),
   }), [reservations])
+
+  const statusOptions: Array<'all' | Reservation['status']> = ['all', 'pending', 'confirmed', 'cancelled']
 
   return (
     <div className="admin-shell">
@@ -152,7 +155,7 @@ function Panel() {
             )}
           </div>
           <div className="seg">
-            {['all', 'pending', 'confirmed', 'cancelled'].map(s => (
+            {statusOptions.map(s => (
               <button key={s} className={statusFilter === s ? 'active' : ''} onClick={() => setStatusFilter(s)}>
                 {s === 'all' ? 'Tutte' : STATUS_LABELS[s]}
               </button>

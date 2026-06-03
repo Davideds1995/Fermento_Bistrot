@@ -1,3 +1,5 @@
+import type { MenuCategory, Product, Reservation, HoursEntry, AtmosphereEntry, AboutSection } from '../types'
+
 /* ============================================================
    FERMENTO — content data (realistic Italian bistrot copy)
    Static sample data. Wire to Supabase later.
@@ -11,7 +13,7 @@ export const COPY = {
     "Fermento nasce dall'idea che le cose buone richiedano tempo. Il pane fermenta con lievito madre per trentasei ore, il caffè riposa dopo la tostatura, il vino attende nella nostra piccola cantina. Vi accogliamo dalla colazione all'aperitivo in una sala dove il marmo, il legno e l'ottone raccontano un'eleganza senza fretta.",
 };
 
-export const ABOUT = [
+export const ABOUT: AboutSection[] = [
   {
     h: "Il principio di una fermentazione",
     p: "Tutto cominciò in una vecchia drogheria del centro, di quelle con gli scaffali fino al soffitto e l'odore di caffè tostato che si attaccava ai cappotti. Era il 2014 quando Lucia e Tommaso Bianchi rilevarono quei quaranta metri quadri di storia bolognese, decisi a farne qualcosa che somigliasse alle botteghe di una volta — ma con la cura di chi ha studiato il mestiere nelle cucine e nei caffè d'Europa."
@@ -30,14 +32,14 @@ export const ABOUT = [
   },
 ];
 
-export const ATMOSPHERE = [
+export const ATMOSPHERE: AtmosphereEntry[] = [
   { n: "I", title: "Il bancone all'alba", desc: "Brioche calde, caffè in tazza grande e il primo sole che entra dalle vetrine.", slot: "atm-1" },
   { n: "II", title: "La sala conviviale", desc: "Marmo, ottone e il lungo tavolo di noce dove i tavoli si incontrano.", slot: "atm-2" },
   { n: "III", title: "L'ora dell'aperitivo", desc: "Calici di naturale, taglieri del nostro casaro e luce dorata di sera.", slot: "atm-3" },
 ];
 
 /* ---- Menu: categories with realistic Italian bistrot items ---- */
-export const MENU = [
+export const MENU: MenuCategory[] = [
   {
     id: "colazioni", name: "Colazioni", note: "Servite dalle 7:30 alle 11:30",
     items: [
@@ -91,12 +93,12 @@ export const MENU = [
 ];
 
 /* flat product list for the menu-admin table */
-export const PRODUCTS = MENU.flatMap(cat =>
+export const PRODUCTS: Product[] = MENU.flatMap(cat =>
   cat.items.map(it => ({ ...it, category: cat.name, categoryId: cat.id }))
 );
 
 /* ---- Sample reservations for /admin ---- */
-export const RESERVATIONS = [
+export const RESERVATIONS: Reservation[] = [
   { id: "R-1042", date: "2026-06-05", time: "13:00", people: 2, name: "Giulia Ferrari", phone: "+39 340 118 4477", email: "giulia.ferrari@gmail.com", note: "Tavolo vicino alla finestra, se possibile.", status: "confirmed" },
   { id: "R-1043", date: "2026-06-05", time: "20:30", people: 4, name: "Marco De Santis", phone: "+39 333 902 1180", email: "m.desantis@outlook.it", note: "Allergia alle noci per un commensale.", status: "pending" },
   { id: "R-1044", date: "2026-06-05", time: "19:00", people: 6, name: "Studio Lombardi", phone: "+39 051 224 880", email: "eventi@studiolombardi.it", note: "Cena di lavoro, fattura aziendale.", status: "confirmed" },
@@ -107,7 +109,7 @@ export const RESERVATIONS = [
   { id: "R-1049", date: "2026-06-07", time: "20:00", people: 8, name: "Compleanno Bruno", phone: "+39 342 889 1102", email: "bruno.r@gmail.com", note: "Tavolo unico, brindisi a sorpresa.", status: "confirmed" },
 ];
 
-export const HOURS = [
+export const HOURS: HoursEntry[] = [
   { d: "Lunedì", h: "Chiuso" },
   { d: "Martedì – Venerdì", h: "07:30 – 23:00" },
   { d: "Sabato", h: "08:30 – 24:00" },
@@ -116,12 +118,12 @@ export const HOURS = [
 
 /* ---- date helpers ---- */
 const MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
-export function formatDate(iso) {
+export function formatDate(iso: string) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} ${MESI[m - 1]} ${y}`;
 }
-export function formatDateShort(iso) {
+export function formatDateShort(iso: string) {
   const [, m, d] = iso.split("-").map(Number);
   const mesi = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
   return `${d} ${mesi[m - 1]}`;

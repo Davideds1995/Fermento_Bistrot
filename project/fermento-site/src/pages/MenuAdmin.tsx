@@ -2,15 +2,16 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { PRODUCTS, MENU } from '../data/content'
+import type { Product } from '../types'
 
 const PASS = 'admin'
 
 /* ── Gate ── */
-function Gate({ onUnlock }) {
+function Gate({ onUnlock }: { onUnlock: () => void }) {
   const [pw, setPw] = useState('')
   const [err, setErr] = useState(false)
 
-  function submit(e) {
+  function submit(e: React.FormEvent) {
     e.preventDefault()
     if (pw === PASS) { onUnlock() } else { setErr(true); setPw('') }
   }
@@ -46,17 +47,32 @@ function Gate({ onUnlock }) {
   )
 }
 
+type ProductDraft = Omit<Product, 'id'> & { id?: string }
+
+interface ProductModalProps {
+  product: Product | null
+  onSave: (data: Product) => void
+  onClose: () => void
+}
+
 /* ── Product form modal ── */
-function ProductModal({ product, onSave, onClose }) {
-  const [form, setForm] = useState(product ?? {
-    name: '', desc: '', price: '', categoryId: MENU[0].id, tags: []
+function ProductModal({ product, onSave, onClose }: ProductModalProps) {
+  const [form, setForm] = useState<ProductDraft>(product ?? {
+    name: '', desc: '', price: '', categoryId: MENU[0].id, category: MENU[0].name, tags: []
   })
 
-  function set(k) { return e => setForm(f => ({ ...f, [k]: e.target.value })) }
+  function set(k: keyof ProductDraft) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm(f => ({ ...f, [k]: e.target.value }))
+  }
 
-  function save(e) {
+  function save(e: React.FormEvent) {
     e.preventDefault()
-    onSave({ ...form, category: MENU.find(c => c.id === form.categoryId)?.name ?? form.categoryId })
+    onSave({
+      ...form,
+      id: form.id ?? `p-${Date.now()}`,
+      category: MENU.find(c => c.id === form.categoryId)?.name ?? form.categoryId,
+    })
   }
 
   return (
@@ -102,18 +118,20 @@ function ProductModal({ product, onSave, onClose }) {
   )
 }
 
+type ModalState = Product | 'new' | null
+
 /* ── Admin panel ── */
 function Panel() {
-  const [products, setProducts] = useState(
+  const [products, setProducts] = useState<Product[]>(
     PRODUCTS.map((p, i) => ({ ...p, id: p.id ?? `p-${i}` }))
   )
-  const [modal, setModal] = useState(null) // null | 'new' | product object
+  const [modal, setModal] = useState<ModalState>(null)
   const [catFilter, setCatFilter] = useState('all')
 
   const cats = ['all', ...MENU.map(c => c.id)]
   const filtered = catFilter === 'all' ? products : products.filter(p => p.categoryId === catFilter)
 
-  function save(data) {
+  function save(data: Product) {
     if (modal === 'new') {
       setProducts(ps => [...ps, { ...data, id: `p-${Date.now()}` }])
     } else {
@@ -122,7 +140,7 @@ function Panel() {
     setModal(null)
   }
 
-  function del(id) {
+  function del(id: string) {
     if (confirm('Eliminare questo prodotto?')) setProducts(ps => ps.filter(p => p.id !== id))
   }
 

@@ -7,18 +7,29 @@ const TIMES = [
   '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00',
 ]
 
-const empty = { nome: '', telefono: '', email: '', data: '', ora: '', persone: '2', note: '' }
+interface FormState {
+  nome: string
+  telefono: string
+  email: string
+  data: string
+  ora: string
+  persone: string
+  note: string
+}
+
+const empty: FormState = { nome: '', telefono: '', email: '', data: '', ora: '', persone: '2', note: '' }
 
 export default function ReservationForm() {
-  const [form, setForm] = useState(empty)
+  const [form, setForm] = useState<FormState>(empty)
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
 
-  function set(k) {
-    return e => setForm(f => ({ ...f, [k]: e.target.value }))
+  function set(k: keyof FormState) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm(f => ({ ...f, [k]: e.target.value }))
   }
 
-  function submit(e) {
+  function submit(e: React.FormEvent) {
     e.preventDefault()
     setBusy(true)
     setTimeout(() => {
