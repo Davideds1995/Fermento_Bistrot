@@ -9,16 +9,19 @@ interface PlateProps {
   title: string
   desc: string
   num: string
+  img?: string
 }
 
-function Plate({ title, desc, num }: PlateProps) {
+function Plate({ title, desc, num, img }: PlateProps) {
   return (
     <div className="feature-item">
       <div className="plate plate-tall">
-        <div className="plate-label">
-          <span className="ico">{num}</span>
-          <em>{title}</em>
-        </div>
+        {img ? <img src={img} alt={title} /> :
+          <div className="plate-label">
+            <span className="ico">{num}</span>
+            <em>{title}</em>
+          </div>
+        }
       </div>
       <p className="fi-num" style={{ marginTop: 'var(--sp-4)' }}>{num}</p>
       <p className="fi-title">{title}</p>
@@ -108,8 +111,8 @@ export default function Home() {
               </p>
             </div>
             <div className="feature-3">
-              {ATMOSPHERE.map(({ n, title, desc }) => (
-                <Plate key={n} num={n} title={title} desc={desc} />
+              {ATMOSPHERE.map(({ n, title, desc, img }) => (
+                <Plate key={n} num={n} title={title} desc={desc} img={img} />
               ))}
             </div>
           </div>

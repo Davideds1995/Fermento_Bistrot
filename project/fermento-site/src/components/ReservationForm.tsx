@@ -107,7 +107,7 @@ export default function ReservationForm() {
         </div>
         <div className="col-2">
           <button className="btn btn-gold btn-block" type="submit" disabled={busy}>
-            {busy ? 'Invio in corso…' : 'Prenota il tuo tavolo'}
+            {busy ? 'Invio in corso…' : 'Richiedi il tuo tavolo'}
           </button>
         </div>
       </div>

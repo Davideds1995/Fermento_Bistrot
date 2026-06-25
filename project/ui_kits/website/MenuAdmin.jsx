@@ -127,7 +127,7 @@ function ProductForm({ product, cats, onCancel, onSave, onDelete }) {
           <Input value={f.price} onChange={set("price")} placeholder="13,00" />
         </Field>
         <Field label="Categoria" required>
-          <Select value={f.categoryId} onChange={set("categoryId")}>
+           value={f.categoryId} onChange={set("categoryId")}>
             {cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </Select>
         </Field>

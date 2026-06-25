@@ -40,6 +40,7 @@ export interface AtmosphereEntry {
   title: string
   desc: string
   slot: string
+  img?: string
 }
 
 export interface AboutSection {

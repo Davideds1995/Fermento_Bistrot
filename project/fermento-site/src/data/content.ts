@@ -7,7 +7,7 @@ import type { MenuCategory, Product, Reservation, HoursEntry, AtmosphereEntry, A
 
 export const COPY = {
   claim: "Dove il tempo lievita lento — caffè di torrefazione artigianale, cucina di mercato e buon vino, dal mattino al calar della sera.",
-  est: "Fondato nel 2014 · Bologna",
+  est: "Fondato nel **** · Roma",
   introTitle: "Una bottega del gusto, dal lievito al calice",
   introBody:
     "Fermento nasce dall'idea che le cose buone richiedano tempo. Il pane fermenta con lievito madre per trentasei ore, il caffè riposa dopo la tostatura, il vino attende nella nostra piccola cantina. Vi accogliamo dalla colazione all'aperitivo in una sala dove il marmo, il legno e l'ottone raccontano un'eleganza senza fretta.",
@@ -33,9 +33,9 @@ export const ABOUT: AboutSection[] = [
 ];
 
 export const ATMOSPHERE: AtmosphereEntry[] = [
-  { n: "I", title: "Il bancone all'alba", desc: "Brioche calde, caffè in tazza grande e il primo sole che entra dalle vetrine.", slot: "atm-1" },
-  { n: "II", title: "La sala conviviale", desc: "Marmo, ottone e il lungo tavolo di noce dove i tavoli si incontrano.", slot: "atm-2" },
-  { n: "III", title: "L'ora dell'aperitivo", desc: "Calici di naturale, taglieri del nostro casaro e luce dorata di sera.", slot: "atm-3" },
+  { n: "I", title: "Il bancone all'alba", desc: "Brioche calde, caffè in tazza grande e il primo sole che entra dalle vetrine.", slot: "atm-1", img:"../../public/assets/calice-e-pane.webp"},
+  { n: "II", title: "La sala conviviale", desc: "Marmo, ottone e il lungo tavolo di noce dove i tavoli si incontrano.", slot: "atm-2", img:"../../public/assets/tartare.webp" },
+  { n: "III", title: "L'ora dell'aperitivo", desc: "Calici di naturale, taglieri del nostro casaro e luce dorata di sera.", slot: "atm-3", img:"../../public/assets/pasta-e-vino.webp" },
 ];
 
 /* ---- Menu: categories with realistic Italian bistrot items ---- */
