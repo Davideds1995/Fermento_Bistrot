@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
-import { Divider, Flourish } from '../components/Divider'
+import { Divider } from '../components/Divider'
 import { COPY, ATMOSPHERE } from '../data/content'
 
 interface PlateProps {
@@ -41,16 +41,24 @@ export default function Home() {
         {/* ── Hero ── */}
         <section className="hero section fade-in">
           <div className="wrap center">
-            <p className="eyebrow" style={{ marginBottom: 'var(--sp-5)' }}>
+            <img
+              src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png"
+              alt="Fermento — Caffè · Bistrot"
+              className="hero-brand-logo"
+            />
+            <p className="eyebrow" style={{ margin: 'var(--sp-3) 0 var(--sp-6)' }}>
               {COPY.est}
             </p>
-            <img
-              src="/assets/logo-fermento.png"
-              alt="Fermento — Caffè · Bistrot"
-              className="hero-logo"
+            <video
+              className="hero-video"
+              src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/video-sfondo.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{ borderRadius: '1.25rem', objectFit: 'cover' }}
             />
-            <Flourish small />
-            <p className="claim" style={{ marginTop: 'var(--sp-5)' }}>
+            <p className="claim" style={{ marginTop: 'var(--sp-6)' }}>
               {COPY.claim}
             </p>
             <div className="hero-actions">
@@ -122,7 +130,6 @@ export default function Home() {
         <section className="section reserve" id="prenotazione">
           <div className="wrap-narrow">
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
-              <Flourish flip small />
               <div className="eyebrow-row">
                 <span className="eyebrow">Prenotazioni</span>
               </div>

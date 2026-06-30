@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ChiSiamo from './pages/ChiSiamo'
 import Menu from './pages/Menu'
@@ -7,7 +7,7 @@ import Admin from './pages/Admin'
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/chi-siamo" element={<ChiSiamo />} />
@@ -15,6 +15,6 @@ export default function App() {
         <Route path="/menu-admin" element={<MenuAdmin />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   )
 }

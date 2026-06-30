@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Icon from './Icon'
+import { supabase } from '../lib/supabase'
 
 const TIMES = [
   '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00',
@@ -23,19 +24,35 @@ export default function ReservationForm() {
   const [form, setForm] = useState<FormState>(empty)
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   function set(k: keyof FormState) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm(f => ({ ...f, [k]: e.target.value }))
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault()
     setBusy(true)
-    setTimeout(() => {
-      setBusy(false)
+    setError('')
+
+    const { error: err } = await supabase.from('reservations').insert({
+      date: form.data,
+      time: form.ora,
+      people: Number(form.persone),
+      name: form.nome,
+      phone: form.telefono,
+      email: form.email,
+      note: form.note,
+      status: 'pending',
+    })
+
+    setBusy(false)
+    if (err) {
+      setError('Si è verificato un errore. Riprova o chiamaci direttamente.')
+    } else {
       setSent(true)
-    }, 900)
+    }
   }
 
   if (sent) {
@@ -105,6 +122,11 @@ export default function ReservationForm() {
           <textarea className="textarea" value={form.note} onChange={set('note')}
             placeholder="Es. allergia ai crostacei, seggiolone per bambino, tavolo finestra…" />
         </div>
+        {error && (
+          <div className="col-2">
+            <p style={{ color: 'var(--terracotta)', fontSize: 'var(--fs-small)', margin: 0 }}>{error}</p>
+          </div>
+        )}
         <div className="col-2">
           <button className="btn btn-gold btn-block" type="submit" disabled={busy}>
             {busy ? 'Invio in corso…' : 'Richiedi il tuo tavolo'}

@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish, Divider } from '../components/Divider'
-import { MENU } from '../data/content'
+import { supabase } from '../lib/supabase'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
 const TAG_LABELS: Record<string, string> = { veg: 'Vegetariano', vegan: 'Vegano' }
@@ -12,7 +12,7 @@ function DietTag({ tag }: { tag: string }) {
   return <span className="diet-tag">{TAG_LABELS[tag] ?? tag}</span>
 }
 
-function MenuItemRow({ name, desc, price, tags }: MenuItemType) {
+function MenuItemRow({ name, description, price, tags }: MenuItemType) {
   return (
     <div className="menu-item">
       <div>
@@ -22,7 +22,7 @@ function MenuItemRow({ name, desc, price, tags }: MenuItemType) {
             {tags.map(t => <DietTag key={t} tag={t} />)}
           </span>
         )}
-        <p className="mi-desc">{desc}</p>
+        <p className="mi-desc">{description}</p>
       </div>
       <span className="mi-price">€ {price}</span>
     </div>
@@ -46,7 +46,39 @@ function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
 }
 
 export default function Menu() {
-  const [active, setActive] = useState(MENU[0].id)
+  const [menu, setMenu] = useState<MenuCategoryType[]>([])
+  const [active, setActive] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      const { data: categories } = await supabase
+        .from('menu_categories')
+        .select('id, name, note')
+        .order('sort_order')
+
+      const { data: items } = await supabase
+        .from('menu_items')
+        .select('id, category_id, name, description, price, tags')
+        .order('sort_order')
+
+      if (!categories || !items) return
+
+      const built: MenuCategoryType[] = categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        note: cat.note,
+        items: items
+          .filter(i => i.category_id === cat.id)
+          .map(i => ({ id: i.id, name: i.name, description: i.description, price: i.price, tags: i.tags ?? [] })),
+      }))
+
+      setMenu(built)
+      if (built.length > 0) setActive(built[0].id)
+      setLoading(false)
+    }
+    load()
+  }, [])
 
   function scrollTo(id: string) {
     setActive(id)
@@ -74,39 +106,47 @@ export default function Menu() {
         </section>
 
         {/* ── Category nav (sticky) ── */}
-        <div style={{
-          position: 'sticky', top: 78, zIndex: 20,
-          background: 'rgba(244,236,218,0.92)', backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid var(--line)', padding: 'var(--sp-4) 0',
-        }}>
-          <div className="wrap">
-            <div className="cat-nav">
-              {MENU.map(cat => (
-                <button
-                  key={cat.id}
-                  className={active === cat.id ? 'active' : ''}
-                  onClick={() => scrollTo(cat.id)}
-                >
-                  {cat.name}
-                </button>
-              ))}
+        {menu.length > 0 && (
+          <div style={{
+            position: 'sticky', top: 78, zIndex: 20,
+            background: 'rgba(244,236,218,0.92)', backdropFilter: 'blur(8px)',
+            borderBottom: '1px solid var(--line)', padding: 'var(--sp-4) 0',
+          }}>
+            <div className="wrap">
+              <div className="cat-nav">
+                {menu.map(cat => (
+                  <button
+                    key={cat.id}
+                    className={active === cat.id ? 'active' : ''}
+                    onClick={() => scrollTo(cat.id)}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* ── Menu sections ── */}
         <section className="section">
           <div className="wrap-narrow">
-            {MENU.map((cat, i) => (
-              <div key={cat.id}>
-                <MenuCategorySection cat={cat} />
-                {i < MENU.length - 1 && (
-                  <div style={{ margin: 'var(--sp-6) 0' }}>
-                    <Divider />
-                  </div>
-                )}
-              </div>
-            ))}
+            {loading ? (
+              <p style={{ textAlign: 'center', color: 'var(--ink-500)', padding: 'var(--sp-8) 0' }}>
+                Caricamento menù…
+              </p>
+            ) : (
+              menu.map((cat, i) => (
+                <div key={cat.id}>
+                  <MenuCategorySection cat={cat} />
+                  {i < menu.length - 1 && (
+                    <div style={{ margin: 'var(--sp-6) 0' }}>
+                      <Divider />
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </section>
 

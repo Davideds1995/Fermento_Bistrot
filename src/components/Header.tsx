@@ -10,7 +10,7 @@ export default function Header() {
       <div className="wrap">
         <div className="bar">
           <NavLink to="/" className="brand-link" onClick={() => setOpen(false)}>
-            <img src="/assets/logo-fermento.png" alt="Fermento" />
+            <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" />
           </NavLink>
 
           <nav className="nav">

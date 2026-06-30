@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
-import { RESERVATIONS, formatDate } from '../data/content'
+import { supabase } from '../lib/supabase'
+import { formatDate } from '../data/content'
 import type { Reservation } from '../types'
 
 const PASS = 'admin'
@@ -19,7 +20,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
   return (
     <div className="gate">
       <div className="gate-card">
-        <img src="/assets/logo-fermento.png" alt="Fermento" className="gate-logo" />
+        <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" className="gate-logo" />
         <div className="lock">
           <Icon name="lock" size={22} />
         </div>
@@ -64,9 +65,29 @@ function StatusBadge({ status }: { status: Reservation['status'] }) {
 
 /* ── Admin panel ── */
 function Panel() {
-  const [reservations, setReservations] = useState<Reservation[]>(RESERVATIONS)
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [loading, setLoading] = useState(true)
   const [dateFilter, setDateFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | Reservation['status']>('all')
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase
+        .from('reservations')
+        .select('*')
+        .order('date')
+        .order('time')
+
+      if (data) {
+        setReservations(data.map(r => ({
+          ...r,
+          time: r.time.slice(0, 5),
+        })))
+      }
+      setLoading(false)
+    }
+    load()
+  }, [])
 
   const filtered = useMemo(() => {
     return reservations
@@ -75,8 +96,15 @@ function Panel() {
       .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   }, [reservations, dateFilter, statusFilter])
 
-  function setStatus(id: string, status: Reservation['status']) {
-    setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r))
+  async function setStatus(id: string, status: Reservation['status']) {
+    const { error } = await supabase
+      .from('reservations')
+      .update({ status })
+      .eq('id', id)
+
+    if (!error) {
+      setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r))
+    }
   }
 
   const stats = useMemo(() => ({
@@ -95,7 +123,7 @@ function Panel() {
         <div className="wrap">
           <div className="bar">
             <div className="a-brand">
-              <img src="/assets/logo-fermento.png" alt="Fermento" style={{ height: 26 }} />
+              <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" style={{ height: 26 }} />
               <span className="a-tag">Gestione Prenotazioni</span>
             </div>
             <div style={{ display: 'flex', gap: 'var(--sp-3)', alignItems: 'center' }}>
@@ -113,7 +141,7 @@ function Panel() {
         <div className="admin-head">
           <div>
             <h1>Prenotazioni</h1>
-            <p className="sub">Pannello di gestione — dati di esempio</p>
+            <p className="sub">Pannello di gestione</p>
           </div>
         </div>
 
@@ -169,92 +197,98 @@ function Panel() {
 
         {/* Table */}
         <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Data e ora</th>
-                <th>Ospiti</th>
-                <th>Nome</th>
-                <th>Contatti</th>
-                <th>Note</th>
-                <th>Stato</th>
-                <th style={{ textAlign: 'right' }}>Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(r => (
-                <tr key={r.id}>
-                  <td style={{ fontFamily: 'var(--font-engrave)', fontSize: 'var(--fs-micro)', letterSpacing: '0.1em', color: 'var(--ink-500)' }}>
-                    {r.id}
-                  </td>
-                  <td>
-                    <p className="t-name" style={{ margin: 0 }}>{formatDate(r.date)}</p>
-                    <p className="t-sub" style={{ margin: 0 }}>
-                      <Icon name="clock" size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                      {r.time}
-                    </p>
-                  </td>
-                  <td>
-                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--ink-900)' }}>
-                      {r.people}
-                    </span>
-                    {' '}persone
-                  </td>
-                  <td>
-                    <p className="t-name" style={{ margin: 0 }}>{r.name}</p>
-                  </td>
-                  <td>
-                    <p style={{ margin: 0, fontSize: 'var(--fs-small)' }}>
-                      <Icon name="phone" size={11} style={{ verticalAlign: 'middle', marginRight: 4, color: 'var(--ink-500)' }} />
-                      {r.phone}
-                    </p>
-                    <p style={{ margin: 0, fontSize: 'var(--fs-small)' }}>
-                      <Icon name="mail" size={11} style={{ verticalAlign: 'middle', marginRight: 4, color: 'var(--ink-500)' }} />
-                      {r.email}
-                    </p>
-                  </td>
-                  <td style={{ maxWidth: 180 }}>
-                    {r.note
-                      ? <p style={{ margin: 0, fontStyle: 'italic', fontSize: 'var(--fs-small)', color: 'var(--ink-500)' }}>{r.note}</p>
-                      : <span style={{ color: 'var(--ink-300)', fontSize: 'var(--fs-small)' }}>—</span>
-                    }
-                  </td>
-                  <td>
-                    <StatusBadge status={r.status} />
-                  </td>
-                  <td className="cell-actions">
-                    <div className="t-actions">
-                      {r.status !== 'confirmed' && (
-                        <button
-                          className="btn btn-sm"
-                          style={{ color: '#4A6B3F', borderColor: 'rgba(74,107,63,0.4)', background: 'transparent', fontSize: '0.68rem' }}
-                          onClick={() => setStatus(r.id, 'confirmed')}
-                        >
-                          <Icon name="check" size={13} /> Conferma
-                        </button>
-                      )}
-                      {r.status !== 'cancelled' && (
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => setStatus(r.id, 'cancelled')}
-                        >
-                          <Icon name="x" size={13} /> Cancella
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
+          {loading ? (
+            <p style={{ textAlign: 'center', color: 'var(--ink-500)', padding: 'var(--sp-8) 0' }}>
+              Caricamento prenotazioni…
+            </p>
+          ) : (
+            <table className="table">
+              <thead>
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: 'var(--sp-8)', color: 'var(--ink-500)', fontStyle: 'italic' }}>
-                    Nessuna prenotazione trovata con i filtri selezionati.
-                  </td>
+                  <th>ID</th>
+                  <th>Data e ora</th>
+                  <th>Ospiti</th>
+                  <th>Nome</th>
+                  <th>Contatti</th>
+                  <th>Note</th>
+                  <th>Stato</th>
+                  <th style={{ textAlign: 'right' }}>Azioni</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map(r => (
+                  <tr key={r.id}>
+                    <td style={{ fontFamily: 'var(--font-engrave)', fontSize: 'var(--fs-micro)', letterSpacing: '0.1em', color: 'var(--ink-500)' }}>
+                      {r.id}
+                    </td>
+                    <td>
+                      <p className="t-name" style={{ margin: 0 }}>{formatDate(r.date)}</p>
+                      <p className="t-sub" style={{ margin: 0 }}>
+                        <Icon name="clock" size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                        {r.time}
+                      </p>
+                    </td>
+                    <td>
+                      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--ink-900)' }}>
+                        {r.people}
+                      </span>
+                      {' '}persone
+                    </td>
+                    <td>
+                      <p className="t-name" style={{ margin: 0 }}>{r.name}</p>
+                    </td>
+                    <td>
+                      <p style={{ margin: 0, fontSize: 'var(--fs-small)' }}>
+                        <Icon name="phone" size={11} style={{ verticalAlign: 'middle', marginRight: 4, color: 'var(--ink-500)' }} />
+                        {r.phone}
+                      </p>
+                      <p style={{ margin: 0, fontSize: 'var(--fs-small)' }}>
+                        <Icon name="mail" size={11} style={{ verticalAlign: 'middle', marginRight: 4, color: 'var(--ink-500)' }} />
+                        {r.email}
+                      </p>
+                    </td>
+                    <td style={{ maxWidth: 180 }}>
+                      {r.note
+                        ? <p style={{ margin: 0, fontStyle: 'italic', fontSize: 'var(--fs-small)', color: 'var(--ink-500)' }}>{r.note}</p>
+                        : <span style={{ color: 'var(--ink-300)', fontSize: 'var(--fs-small)' }}>—</span>
+                      }
+                    </td>
+                    <td>
+                      <StatusBadge status={r.status} />
+                    </td>
+                    <td className="cell-actions">
+                      <div className="t-actions">
+                        {r.status !== 'confirmed' && (
+                          <button
+                            className="btn btn-sm"
+                            style={{ color: '#4A6B3F', borderColor: 'rgba(74,107,63,0.4)', background: 'transparent', fontSize: '0.68rem' }}
+                            onClick={() => setStatus(r.id, 'confirmed')}
+                          >
+                            <Icon name="check" size={13} /> Conferma
+                          </button>
+                        )}
+                        {r.status !== 'cancelled' && (
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => setStatus(r.id, 'cancelled')}
+                          >
+                            <Icon name="x" size={13} /> Cancella
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: 'var(--sp-8)', color: 'var(--ink-500)', fontStyle: 'italic' }}>
+                      Nessuna prenotazione trovata con i filtri selezionati.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="wrap">
         <div className="center">
-          <img src="/assets/logo-fermento-ivory.png" alt="Fermento" className="foot-logo" />
+          <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento-ivory.png" alt="Fermento" className="foot-logo" />
           <hr className="filet" style={{ maxWidth: 320, margin: '0 auto' }} />
         </div>
 

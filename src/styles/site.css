@@ -65,7 +65,7 @@ button { font-family: inherit; cursor: pointer; }
   height: 78px;
 }
 .brand-link { display: flex; align-items: center; gap: var(--sp-3); }
-.brand-link img { height: 38px; width: auto; }
+.brand-link img { height: 48px; width: auto; }
 .brand-mark {
   font-family: var(--font-engrave); font-weight: 700; letter-spacing: 0.18em;
   font-size: 1.15rem; color: var(--ink-900); text-transform: uppercase;
@@ -76,12 +76,7 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: var(--track-nav); font-size: 0.78rem; font-weight: 600;
   position: relative;
 }
-.nav a:hover, .nav a.active { color: var(--ink-900); }
-.nav a.active::after {
-  content: ""; position: absolute; left: 50%; transform: translateX(-50%);
-  bottom: -2px; width: 6px; height: 6px; rotate: 45deg;
-  background: var(--gold);
-}
+
 .nav-cta { margin-left: var(--sp-3); }
 
 /* mobile nav toggle */
@@ -199,10 +194,11 @@ button { font-family: inherit; cursor: pointer; }
    Hero
    ============================================================ */
 .hero {
-  position: relative; text-align: center; padding: var(--sp-10) 0 var(--sp-9);
+  position: relative; text-align: center; padding: var(--sp-6) 0 var(--sp-6);
   overflow: hidden;
 }
-.hero-logo { width: min(640px, 86%); height: auto; margin: 0 auto var(--sp-6); }
+.hero-brand-logo { width: min(180px, 44%); height: auto; margin: 0 auto; display: block; }
+.hero-video { width: min(960px, 94%); height: auto; aspect-ratio: 16/9; margin: 0 auto; display: block; }
 .hero .claim {
   font-family: var(--font-display); font-style: italic; font-weight: 500;
   font-size: var(--fs-lead); color: var(--ink-700); max-width: 620px;

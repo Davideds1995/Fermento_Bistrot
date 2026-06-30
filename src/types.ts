@@ -1,7 +1,7 @@
 export interface MenuItem {
   id: string
   name: string
-  desc: string
+  description: string
   price: string
   tags: string[]
 }
@@ -17,6 +17,7 @@ export interface Product extends MenuItem {
   category: string
   categoryId: string
 }
+
 
 export interface Reservation {
   id: string

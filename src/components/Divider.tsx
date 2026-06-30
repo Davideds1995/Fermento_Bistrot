@@ -9,7 +9,7 @@ export function Divider({ mark = '✦' }) {
 export function Flourish({ flip = false, small = false }) {
   return (
     <img
-      src="/assets/ornament-flourish.png"
+      src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/ornament-flourish.png"
       alt=""
       className={`flourish${flip ? ' flip' : ''}${small ? ' sm' : ''}`}
     />

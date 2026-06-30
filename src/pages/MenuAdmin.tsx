@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
-import { PRODUCTS, MENU } from '../data/content'
+import { supabase } from '../lib/supabase'
 import type { Product } from '../types'
 
 const PASS = 'admin'
@@ -19,7 +19,7 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
   return (
     <div className="gate">
       <div className="gate-card">
-        <img src="/assets/logo-fermento.png" alt="Fermento" className="gate-logo" />
+        <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" className="gate-logo" />
         <div className="lock">
           <Icon name="lock" size={22} />
         </div>
@@ -47,18 +47,23 @@ function Gate({ onUnlock }: { onUnlock: () => void }) {
   )
 }
 
+interface Category { id: string; name: string }
 type ProductDraft = Omit<Product, 'id'> & { id?: string }
 
 interface ProductModalProps {
   product: Product | null
+  categories: Category[]
   onSave: (data: Product) => void
   onClose: () => void
 }
 
 /* ── Product form modal ── */
-function ProductModal({ product, onSave, onClose }: ProductModalProps) {
+function ProductModal({ product, categories, onSave, onClose }: ProductModalProps) {
   const [form, setForm] = useState<ProductDraft>(product ?? {
-    name: '', desc: '', price: '', categoryId: MENU[0].id, category: MENU[0].name, tags: []
+    name: '', description: '', price: '',
+    categoryId: categories[0]?.id ?? '',
+    category: categories[0]?.name ?? '',
+    tags: [],
   })
 
   function set(k: keyof ProductDraft) {
@@ -71,7 +76,7 @@ function ProductModal({ product, onSave, onClose }: ProductModalProps) {
     onSave({
       ...form,
       id: form.id ?? `p-${Date.now()}`,
-      category: MENU.find(c => c.id === form.categoryId)?.name ?? form.categoryId,
+      category: categories.find(c => c.id === form.categoryId)?.name ?? form.categoryId,
     })
   }
 
@@ -91,7 +96,7 @@ function ProductModal({ product, onSave, onClose }: ProductModalProps) {
               </div>
               <div className="field col-2">
                 <label>Descrizione</label>
-                <textarea className="textarea" value={form.desc} onChange={set('desc')}
+                <textarea className="textarea" value={form.description} onChange={set('description')}
                   placeholder="Ingredienti e breve descrizione del piatto." style={{ minHeight: 72 }} />
               </div>
               <div className="field">
@@ -101,7 +106,7 @@ function ProductModal({ product, onSave, onClose }: ProductModalProps) {
               <div className="field">
                 <label>Categoria <span className="req">*</span></label>
                 <select className="select" required value={form.categoryId} onChange={set('categoryId')}>
-                  {MENU.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
             </div>
@@ -122,26 +127,85 @@ type ModalState = Product | 'new' | null
 
 /* ── Admin panel ── */
 function Panel() {
-  const [products, setProducts] = useState<Product[]>(
-    PRODUCTS.map((p, i) => ({ ...p, id: p.id ?? `p-${i}` }))
-  )
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<ModalState>(null)
   const [catFilter, setCatFilter] = useState('all')
 
-  const cats = ['all', ...MENU.map(c => c.id)]
+  useEffect(() => {
+    async function load() {
+      const [{ data: cats }, { data: items }] = await Promise.all([
+        supabase.from('menu_categories').select('id, name').order('sort_order'),
+        supabase.from('menu_items').select('id, category_id, name, description, price, tags').order('sort_order'),
+      ])
+
+      if (cats) setCategories(cats)
+      if (cats && items) {
+        setProducts(items.map(i => ({
+          id: i.id,
+          name: i.name,
+          description: i.description,
+          price: i.price,
+          tags: i.tags ?? [],
+          categoryId: i.category_id,
+          category: cats.find(c => c.id === i.category_id)?.name ?? i.category_id,
+        })))
+      }
+      setLoading(false)
+    }
+    load()
+  }, [])
+
   const filtered = catFilter === 'all' ? products : products.filter(p => p.categoryId === catFilter)
 
-  function save(data: Product) {
+  async function save(data: Product) {
     if (modal === 'new') {
-      setProducts(ps => [...ps, { ...data, id: `p-${Date.now()}` }])
+      const { data: inserted, error } = await supabase
+        .from('menu_items')
+        .insert({
+          id: `p-${Date.now()}`,
+          category_id: data.categoryId,
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          tags: data.tags,
+          sort_order: products.filter(p => p.categoryId === data.categoryId).length + 1,
+        })
+        .select()
+        .single()
+
+      if (error) { alert('Errore durante il salvataggio: ' + error.message); return }
+      setProducts(ps => [...ps, {
+        ...data,
+        id: inserted.id,
+        category: categories.find(c => c.id === inserted.category_id)?.name ?? inserted.category_id,
+      }])
     } else {
-      setProducts(ps => ps.map(p => p.id === data.id ? data : p))
+      const { error } = await supabase
+        .from('menu_items')
+        .update({
+          category_id: data.categoryId,
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          tags: data.tags,
+        })
+        .eq('id', data.id)
+
+      if (error) { alert('Errore durante il salvataggio: ' + error.message); return }
+      setProducts(ps => ps.map(p => p.id === data.id ? {
+        ...data,
+        category: categories.find(c => c.id === data.categoryId)?.name ?? data.categoryId,
+      } : p))
     }
     setModal(null)
   }
 
-  function del(id: string) {
-    if (confirm('Eliminare questo prodotto?')) setProducts(ps => ps.filter(p => p.id !== id))
+  async function del(id: string) {
+    if (!confirm('Eliminare questo prodotto?')) return
+    const { error } = await supabase.from('menu_items').delete().eq('id', id)
+    if (!error) setProducts(ps => ps.filter(p => p.id !== id))
   }
 
   return (
@@ -151,7 +215,7 @@ function Panel() {
         <div className="wrap">
           <div className="bar">
             <div className="a-brand">
-              <img src="/assets/logo-fermento.png" alt="Fermento" style={{ height: 26 }} />
+              <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" style={{ height: 26 }} />
               <span className="a-tag">Gestione Menù</span>
             </div>
             <div style={{ display: 'flex', gap: 'var(--sp-3)', alignItems: 'center' }}>
@@ -171,7 +235,7 @@ function Panel() {
             <h1>Prodotti del menù</h1>
             <p className="sub">{products.length} voci · aggiornato oggi</p>
           </div>
-          <button className="btn btn-primary" onClick={() => setModal('new')}>
+          <button className="btn btn-primary" onClick={() => setModal('new')} disabled={loading}>
             <Icon name="plus" size={16} /> Aggiungi prodotto
           </button>
         </div>
@@ -179,8 +243,8 @@ function Panel() {
         {/* Toolbar */}
         <div className="toolbar">
           <div className="seg">
-            {cats.map(c => {
-              const label = c === 'all' ? 'Tutti' : MENU.find(m => m.id === c)?.name ?? c
+            {(['all', ...categories.map(c => c.id)]).map(c => {
+              const label = c === 'all' ? 'Tutti' : categories.find(m => m.id === c)?.name ?? c
               return (
                 <button key={c} className={catFilter === c ? 'active' : ''} onClick={() => setCatFilter(c)}>
                   {label}
@@ -196,46 +260,53 @@ function Panel() {
 
         {/* Table */}
         <div className="table-scroll">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Prodotto</th>
-                <th>Categoria</th>
-                <th>Prezzo</th>
-                <th style={{ textAlign: 'right' }}>Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(p => (
-                <tr key={p.id}>
-                  <td>
-                    <p className="t-name" style={{ margin: 0 }}>{p.name}</p>
-                    {p.desc && <p className="t-sub" style={{ margin: 0 }}>{p.desc}</p>}
-                  </td>
-                  <td>
-                    <span className="badge badge-cat">{p.category}</span>
-                  </td>
-                  <td className="t-price">€ {p.price}</td>
-                  <td className="cell-actions">
-                    <div className="t-actions">
-                      <button className="icon-btn" title="Modifica" onClick={() => setModal(p)}>
-                        <Icon name="edit" size={15} />
-                      </button>
-                      <button className="icon-btn danger" title="Elimina" onClick={() => del(p.id)}>
-                        <Icon name="trash" size={15} />
-                      </button>
-                    </div>
-                  </td>
+          {loading ? (
+            <p style={{ textAlign: 'center', color: 'var(--ink-500)', padding: 'var(--sp-8) 0' }}>
+              Caricamento menù…
+            </p>
+          ) : (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Prodotto</th>
+                  <th>Categoria</th>
+                  <th>Prezzo</th>
+                  <th style={{ textAlign: 'right' }}>Azioni</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map(p => (
+                  <tr key={p.id}>
+                    <td>
+                      <p className="t-name" style={{ margin: 0 }}>{p.name}</p>
+                      {p.description && <p className="t-sub" style={{ margin: 0 }}>{p.description}</p>}
+                    </td>
+                    <td>
+                      <span className="badge badge-cat">{p.category}</span>
+                    </td>
+                    <td className="t-price">€ {p.price}</td>
+                    <td className="cell-actions">
+                      <div className="t-actions">
+                        <button className="icon-btn" title="Modifica" onClick={() => setModal(p)}>
+                          <Icon name="edit" size={15} />
+                        </button>
+                        <button className="icon-btn danger" title="Elimina" onClick={() => del(p.id)}>
+                          <Icon name="trash" size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
       {modal && (
         <ProductModal
           product={modal === 'new' ? null : modal}
+          categories={categories}
           onSave={save}
           onClose={() => setModal(null)}
         />
