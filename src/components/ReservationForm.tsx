@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Icon from './Icon'
 import { supabase } from '../lib/supabase'
+import { sendReservationEmail } from '../lib/email'
 
 const TIMES = [
   '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00',
@@ -52,6 +53,14 @@ export default function ReservationForm() {
       setError('Si è verificato un errore. Riprova o chiamaci direttamente.')
     } else {
       setSent(true)
+      sendReservationEmail({
+        type: 'request_received',
+        name: form.nome,
+        email: form.email,
+        date: form.data,
+        time: form.ora,
+        people: form.persone,
+      })
     }
   }
 

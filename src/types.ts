@@ -29,6 +29,7 @@ export interface Reservation {
   email: string
   note: string
   status: 'confirmed' | 'pending' | 'cancelled'
+  admin_message: string | null
 }
 
 export interface HoursEntry {
