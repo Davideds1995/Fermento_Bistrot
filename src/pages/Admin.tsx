@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { supabase } from '../lib/supabase'
+import { sendReservationEmail } from '../lib/email'
 import { formatDate } from '../data/content'
 import type { Reservation } from '../types'
 
@@ -63,12 +64,66 @@ function StatusBadge({ status }: { status: Reservation['status'] }) {
   )
 }
 
+interface RespondingState {
+  reservation: Reservation
+  action: 'confirmed' | 'cancelled'
+}
+
+/* ── Response modal ── */
+function ResponseModal({ state, onConfirm, onClose }: {
+  state: RespondingState
+  onConfirm: (message: string) => void
+  onClose: () => void
+}) {
+  const [message, setMessage] = useState(state.reservation.admin_message ?? '')
+  const isConfirm = state.action === 'confirmed'
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault()
+    onConfirm(message)
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-head">
+          <h3>{isConfirm ? 'Conferma prenotazione' : 'Cancella prenotazione'}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Chiudi">×</button>
+        </div>
+        <form onSubmit={submit}>
+          <div className="modal-body">
+            <p style={{ marginTop: 0 }}>
+              {state.reservation.name} · {formatDate(state.reservation.date)} alle {state.reservation.time} · {state.reservation.people} persone
+            </p>
+            <div className="field">
+              <label>Risposta al cliente (facoltativa)</label>
+              <textarea
+                className="textarea"
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Es. Vi aspettiamo al tavolo vicino alla vetrina. A presto!"
+              />
+            </div>
+          </div>
+          <div className="modal-foot">
+            <button type="button" className="btn btn-ghost" onClick={onClose}>Annulla</button>
+            <button type="submit" className="btn btn-primary">
+              Invia {isConfirm ? 'conferma' : 'cancellazione'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 /* ── Admin panel ── */
 function Panel() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
   const [dateFilter, setDateFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | Reservation['status']>('all')
+  const [responding, setResponding] = useState<RespondingState | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -96,14 +151,25 @@ function Panel() {
       .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   }, [reservations, dateFilter, statusFilter])
 
-  async function setStatus(id: string, status: Reservation['status']) {
+  async function respond(reservation: Reservation, status: 'confirmed' | 'cancelled', message: string) {
+    const admin_message = message.trim() || null
     const { error } = await supabase
       .from('reservations')
-      .update({ status })
-      .eq('id', id)
+      .update({ status, admin_message })
+      .eq('id', reservation.id)
 
     if (!error) {
-      setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r))
+      setReservations(rs => rs.map(r => r.id === reservation.id ? { ...r, status, admin_message } : r))
+      setResponding(null)
+      sendReservationEmail({
+        type: status,
+        name: reservation.name,
+        email: reservation.email,
+        date: reservation.date,
+        time: reservation.time,
+        people: reservation.people,
+        adminMessage: admin_message,
+      })
     }
   }
 
@@ -262,7 +328,7 @@ function Panel() {
                           <button
                             className="btn btn-sm"
                             style={{ color: '#4A6B3F', borderColor: 'rgba(74,107,63,0.4)', background: 'transparent', fontSize: '0.68rem' }}
-                            onClick={() => setStatus(r.id, 'confirmed')}
+                            onClick={() => setResponding({ reservation: r, action: 'confirmed' })}
                           >
                             <Icon name="check" size={13} /> Conferma
                           </button>
@@ -270,7 +336,7 @@ function Panel() {
                         {r.status !== 'cancelled' && (
                           <button
                             className="btn btn-sm btn-danger"
-                            onClick={() => setStatus(r.id, 'cancelled')}
+                            onClick={() => setResponding({ reservation: r, action: 'cancelled' })}
                           >
                             <Icon name="x" size={13} /> Cancella
                           </button>
@@ -291,6 +357,14 @@ function Panel() {
           )}
         </div>
       </div>
+
+      {responding && (
+        <ResponseModal
+          state={responding}
+          onClose={() => setResponding(null)}
+          onConfirm={message => respond(responding.reservation, responding.action, message)}
+        />
+      )}
     </div>
   )
 }
