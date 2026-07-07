@@ -3,7 +3,7 @@
 // i dati necessari nel body della richiesta.
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
-const FROM_ADDRESS = 'Fermento Bistrot <onboarding@resend.dev>'
+const FROM_ADDRESS = 'Fermento Bistrot <prenotazioni@fermentobistrot.com>'
 const REPLY_TO = 'fermentoefamily@gmail.com'
 
 const CORS_HEADERS = {
