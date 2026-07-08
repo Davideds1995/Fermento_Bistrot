@@ -40,11 +40,12 @@ fermento_bistrot/
 | `#/` | Home | Hero, presentazione, galleria Ambiente, form prenotazione |
 | `#/chi-siamo` | Chi siamo | Storia del locale, valori, form prenotazione |
 | `#/menu` | Menù | Categorie con navigazione sticky, piatti, prezzi, tag dieta |
-| `#/menu-admin` | Admin Menù | Password gate → tabella prodotti con CRUD |
-| `#/admin` | Admin Prenotazioni | Password gate → tabella prenotazioni con filtri e conferma |
+| `#/menu-admin` | Admin Menù | Login Supabase → tabella prodotti con CRUD |
+| `#/admin` | Admin Prenotazioni | Login Supabase → tabella prenotazioni con filtri e conferma |
 
 > Le route `/menu-admin` e `/admin` non sono nel nav pubblico (solo via URL).
-> Password demo: `admin`
+> Login reale con Supabase Auth (email + password), condiviso tra le due sezioni.
+> Vedi [ADMIN_AUTH.md](ADMIN_AUTH.md) per come funziona e come creare/gestire gli account admin.
 
 ---
 

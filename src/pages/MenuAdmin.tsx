@@ -1,51 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
+import AdminGate from '../components/AdminGate'
 import { supabase } from '../lib/supabase'
 import type { Product } from '../types'
-
-const PASS = 'admin'
-
-/* ── Gate ── */
-function Gate({ onUnlock }: { onUnlock: () => void }) {
-  const [pw, setPw] = useState('')
-  const [err, setErr] = useState(false)
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault()
-    if (pw === PASS) { onUnlock() } else { setErr(true); setPw('') }
-  }
-
-  return (
-    <div className="gate">
-      <div className="gate-card">
-        <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" className="gate-logo" />
-        <div className="lock">
-          <Icon name="lock" size={22} />
-        </div>
-        <h2 style={{ margin: 'var(--sp-2) 0 var(--sp-3)', fontSize: 'var(--fs-h3)' }}>
-          Accesso Menù
-        </h2>
-        <form onSubmit={submit}>
-          <div className="field" style={{ marginBottom: 'var(--sp-4)' }}>
-            <label>Password</label>
-            <input
-              className="input"
-              type="password"
-              value={pw}
-              onChange={e => { setPw(e.target.value); setErr(false) }}
-              placeholder="••••••••"
-              autoFocus
-            />
-          </div>
-          {err && <p style={{ color: 'var(--terracotta)', marginBottom: 'var(--sp-3)', fontSize: 'var(--fs-small)' }}>Password errata.</p>}
-          <button className="btn btn-primary btn-block" type="submit">Accedi</button>
-        </form>
-        <p className="hint">Usa <code>admin</code> per questo ambiente di demo.</p>
-      </div>
-    </div>
-  )
-}
 
 interface Category { id: string; name: string }
 type ProductDraft = Omit<Product, 'id'> & { id?: string }
@@ -220,9 +178,9 @@ function Panel() {
             </div>
             <div style={{ display: 'flex', gap: 'var(--sp-3)', alignItems: 'center' }}>
               <Link to="/admin" className="btn btn-ghost btn-sm">Prenotazioni</Link>
-              <Link to="/" className="btn btn-outline btn-sm">
+              <button className="btn btn-outline btn-sm" onClick={() => supabase.auth.signOut()}>
                 <Icon name="logout" size={14} /> Esci
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -316,6 +274,9 @@ function Panel() {
 }
 
 export default function MenuAdmin() {
-  const [unlocked, setUnlocked] = useState(false)
-  return unlocked ? <Panel /> : <Gate onUnlock={() => setUnlocked(true)} />
+  return (
+    <AdminGate title="Accesso Menù">
+      <Panel />
+    </AdminGate>
+  )
 }
