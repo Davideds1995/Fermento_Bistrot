@@ -223,7 +223,7 @@ function Panel() {
               Caricamento menù…
             </p>
           ) : (
-            <table className="table">
+            <table className="table table--menu">
               <thead>
                 <tr>
                   <th>Prodotto</th>

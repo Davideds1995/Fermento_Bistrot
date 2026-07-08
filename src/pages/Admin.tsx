@@ -194,11 +194,11 @@ function Panel() {
           <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--sp-3)', margin: 0 }}>
             <Icon name="calendar" size={16} style={{ color: 'var(--ink-500)', flexShrink: 0 }} />
             <input
-              className="input"
+              className="input input-date"
               type="date"
               value={dateFilter}
               onChange={e => setDateFilter(e.target.value)}
-              style={{ width: 180, padding: '8px 12px' }}
+              style={{ padding: '8px 12px' }}
             />
             {dateFilter && (
               <button className="btn btn-ghost btn-sm" onClick={() => setDateFilter('')}>
@@ -226,7 +226,7 @@ function Panel() {
               Caricamento prenotazioni…
             </p>
           ) : (
-            <table className="table">
+            <table className="table table--reservations">
               <thead>
                 <tr>
                   <th>ID</th>

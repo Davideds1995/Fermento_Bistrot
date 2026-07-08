@@ -6,6 +6,7 @@
   "description": "Fermento — Caffè · Bistrot. Sito (React + Vite + TypeScript).",
   "scripts": {
     "dev": "vite",
+    "host": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
