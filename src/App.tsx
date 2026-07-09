@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './lib/auth'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import ChiSiamo from './pages/ChiSiamo'
 import Menu from './pages/Menu'
@@ -10,6 +11,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/chi-siamo" element={<ChiSiamo />} />
