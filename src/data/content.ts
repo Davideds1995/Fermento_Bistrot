@@ -16,19 +16,24 @@ export const COPY = {
 export const ABOUT: AboutSection[] = [
   {
     h: "Il principio di una fermentazione",
-    p: "Tutto cominciò in una vecchia drogheria del centro, di quelle con gli scaffali fino al soffitto e l'odore di caffè tostato che si attaccava ai cappotti. Era il 2014 quando Lucia e Tommaso Bianchi rilevarono quei quaranta metri quadri di storia bolognese, decisi a farne qualcosa che somigliasse alle botteghe di una volta — ma con la cura di chi ha studiato il mestiere nelle cucine e nei caffè d'Europa."
+    p: "Tutto cominciò in una vecchia drogheria del centro, di quelle con gli scaffali fino al soffitto e l'odore di caffè tostato che si attaccava ai cappotti. Era il 2014 quando Lucia e Tommaso Bianchi rilevarono quei quaranta metri quadri di storia bolognese, decisi a farne qualcosa che somigliasse alle botteghe di una volta — ma con la cura di chi ha studiato il mestiere nelle cucine e nei caffè d'Europa.",
+    img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/guancia.webp"
   },
   {
     h: "Il lievito madre e le ore lente",
-    p: "Il nome non è un vezzo. Fermento è il nostro modo di intendere il cibo: una lunga attesa che trasforma la materia. La nostra pasta madre, battezzata «Genoveffa», ha più anni del locale e viene rinfrescata ogni alba. Da lei nascono i pani, le brioche sfogliate a mano e i lievitati che riempiono la vetrina al mattino. Nulla ha fretta, da noi: nemmeno il caffè, che lasciamo riposare dopo la tostatura prima di macinarlo all'istante."
+    p: "Il nome non è un vezzo. Fermento è il nostro modo di intendere il cibo: una lunga attesa che trasforma la materia. La nostra pasta madre, battezzata «Genoveffa», ha più anni del locale e viene rinfrescata ogni alba. Da lei nascono i pani, le brioche sfogliate a mano e i lievitati che riempiono la vetrina al mattino. Nulla ha fretta, da noi: nemmeno il caffè, che lasciamo riposare dopo la tostatura prima di macinarlo all'istante.",
+    img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/miele.webp"
   },
   {
     h: "La sala, l'ottone e il marmo",
-    p: "Abbiamo conservato il bancone originale in marmo di Verona e le vetrine in legno di noce, aggiungendo specchi molati, lampade d'ottone e un lungo tavolo conviviale ricavato da una vecchia porta di cascina. Volevamo una sala che invitasse a restare: a leggere il giornale davanti a un cappuccino, a discutere di vino al tramonto, a festeggiare senza guardare l'orologio."
+    p: "Abbiamo conservato il bancone originale in marmo di Verona e le vetrine in legno di noce, aggiungendo specchi molati, lampade d'ottone e un lungo tavolo conviviale ricavato da una vecchia porta di cascina. Volevamo una sala che invitasse a restare: a leggere il giornale davanti a un cappuccino, a discutere di vino al tramonto, a festeggiare senza guardare l'orologio.",
+    img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/tavolo.webp"
+  
   },
   {
     h: "Di mercato, di stagione, di vicinato",
-    p: "La cucina cambia con ciò che il mercato offre. Lavoriamo con un piccolo cerchio di contadini, casari e vignaioli dell'Appennino: le uova arrivano da Monghidoro, il Parmigiano da una stalla di trentasei mesi, le verdure dall'orto di Sasso Marconi. Crediamo che un bistrot debba assomigliare al suo quartiere — e nutrirlo, ogni giorno, con la stessa generosità di una tavola di famiglia."
+    p: "La cucina cambia con ciò che il mercato offre. Lavoriamo con un piccolo cerchio di contadini, casari e vignaioli dell'Appennino: le uova arrivano da Monghidoro, il Parmigiano da una stalla di trentasei mesi, le verdure dall'orto di Sasso Marconi. Crediamo che un bistrot debba assomigliare al suo quartiere — e nutrirlo, ogni giorno, con la stessa generosità di una tavola di famiglia.",
+    img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/vini.webp"
   },
 ];
 

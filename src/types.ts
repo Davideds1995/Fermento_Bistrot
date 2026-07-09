@@ -48,6 +48,7 @@ export interface AtmosphereEntry {
 export interface AboutSection {
   h: string
   p: string
+  img?: string
 }
 
 export type IconName =

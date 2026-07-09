@@ -1,6 +1,6 @@
 # Fermento — Caffè · Bistrot
 
-Sito web e sistema di gestione per *Fermento*, un caffè-bistrot artigianale a Bologna.
+Sito web e sistema di gestione per *Fermento*, un caffè-bistrot artigianale a Roma.
 Stack: **React 18 + Vite 5 + TypeScript 5** (frontend) · **Supabase** (backend, da configurare).
 
 ---

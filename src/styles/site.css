@@ -175,8 +175,7 @@ button { font-family: inherit; cursor: pointer; }
   content: ""; position: absolute; inset: 8px; border: 1px solid rgba(244,236,218,0.5);
   z-index: 2; pointer-events: none;
 }
-.plate img { width: 100%; height: 100%; object-fit: cover;
-  filter: sepia(0.32) contrast(0.96) brightness(0.98) saturate(0.85); }
+.plate img { width: 100%; height: 100%; object-fit: cover; }
 .plate .plate-label {
   position: relative; z-index: 1; text-align: center; color: var(--ink-500);
   font-family: var(--font-body); font-style: italic; font-size: 0.95rem;

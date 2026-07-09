@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
-import { Flourish, Divider } from '../components/Divider'
+import { Flourish } from '../components/Divider'
 import { supabase } from '../lib/supabase'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
@@ -80,10 +80,12 @@ export default function Menu() {
     load()
   }, [])
 
-  function scrollTo(id: string) {
+  function selectCategory(id: string) {
     setActive(id)
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  const activeCategory = menu.find(cat => cat.id === active)
 
   return (
     <>
@@ -118,7 +120,7 @@ export default function Menu() {
                   <button
                     key={cat.id}
                     className={active === cat.id ? 'active' : ''}
-                    onClick={() => scrollTo(cat.id)}
+                    onClick={() => selectCategory(cat.id)}
                   >
                     {cat.name}
                   </button>
@@ -128,25 +130,16 @@ export default function Menu() {
           </div>
         )}
 
-        {/* ── Menu sections ── */}
-        <section className="section">
+        {/* ── Menu section (solo categoria selezionata) ── */}
+        <section className="section" id="menu-section">
           <div className="wrap-narrow">
             {loading ? (
               <p style={{ textAlign: 'center', color: 'var(--ink-500)', padding: 'var(--sp-8) 0' }}>
                 Caricamento menù…
               </p>
-            ) : (
-              menu.map((cat, i) => (
-                <div key={cat.id}>
-                  <MenuCategorySection cat={cat} />
-                  {i < menu.length - 1 && (
-                    <div style={{ margin: 'var(--sp-6) 0' }}>
-                      <Divider />
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
+            ) : activeCategory ? (
+              <MenuCategorySection cat={activeCategory} />
+            ) : null}
           </div>
         </section>
 

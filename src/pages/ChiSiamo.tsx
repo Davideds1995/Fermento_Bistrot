@@ -28,45 +28,47 @@ export default function ChiSiamo() {
         {/* ── Story sections ── */}
         <section className="section">
           <div className="wrap-narrow">
-            {ABOUT.map(({ h, p }, i) => (
-              <div key={h}>
-                <div className="feature-2" style={{ marginBottom: 'var(--sp-8)', alignItems: 'flex-start' }}>
-                  {/* alternating layout: text / plate */}
-                  {i % 2 === 0 ? (
-                    <>
-                      <div>
-                        <h2 style={{ marginBottom: 'var(--sp-4)' }}>{h}</h2>
-                        <p style={{ margin: 0 }}>{p}</p>
-                      </div>
-                      <div className="plate plate-square" style={{ minHeight: 240, borderRadius: 'var(--r-md)' }}>
-                        <div className="plate-label">
-                          <span className="ico" style={{ fontFamily: 'var(--font-engrave)', fontSize: '1.2rem' }}>
-                            {['I', 'II', 'III', 'IV'][i]}
-                          </span>
-                          <em>{h}</em>
-                        </div>
-                      </div>
-                    </>
+            {ABOUT.map(({ h, p, img }, i) => {
+              const plate = (
+                <div className="plate plate-square" style={{ minHeight: 240, borderRadius: 'var(--r-md)' }}>
+                  {img ? (
+                    <img src={img} alt={h} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--r-md)' }} />
                   ) : (
-                    <>
-                      <div className="plate plate-square" style={{ minHeight: 240, borderRadius: 'var(--r-md)' }}>
-                        <div className="plate-label">
-                          <span className="ico" style={{ fontFamily: 'var(--font-engrave)', fontSize: '1.2rem' }}>
-                            {['I', 'II', 'III', 'IV'][i]}
-                          </span>
-                          <em>{h}</em>
-                        </div>
-                      </div>
-                      <div>
-                        <h2 style={{ marginBottom: 'var(--sp-4)' }}>{h}</h2>
-                        <p style={{ margin: 0 }}>{p}</p>
-                      </div>
-                    </>
+                    <div className="plate-label">
+                      <span className="ico" style={{ fontFamily: 'var(--font-engrave)', fontSize: '1.2rem' }}>
+                        {['I', 'II', 'III', 'IV'][i]}
+                      </span>
+                      <em>{h}</em>
+                    </div>
                   )}
                 </div>
-                {i < ABOUT.length - 1 && <Divider />}
-              </div>
-            ))}
+              )
+              const text = (
+                <div>
+                  <h2 style={{ marginBottom: 'var(--sp-4)' }}>{h}</h2>
+                  <p style={{ margin: 0 }}>{p}</p>
+                </div>
+              )
+              return (
+                <div key={h}>
+                  <div className="feature-2" style={{ marginBottom: 'var(--sp-8)', alignItems: 'flex-start' }}>
+                    {/* alternating layout: text / plate */}
+                    {i % 2 === 0 ? (
+                      <>
+                        {text}
+                        {plate}
+                      </>
+                    ) : (
+                      <>
+                        {plate}
+                        {text}
+                      </>
+                    )}
+                  </div>
+                  {i < ABOUT.length - 1 && <Divider />}
+                </div>
+              )
+            })}
           </div>
         </section>
 

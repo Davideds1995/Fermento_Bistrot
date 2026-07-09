@@ -13,13 +13,14 @@ export default function Footer() {
         <div className="foot-cols">
           <div>
             <h4>Dove siamo</h4>
-            <p>Via del Pratello, 14</p>
-            <p>40122 Bologna (BO)</p>
+            <p>Piazza di Villa Carpegna 38</p>
+            <p>00165 Roma (RM)</p>
             <p style={{ marginTop: 12 }}>
-              <a href="tel:+390512345678">+39 051 234 5678</a>
+              📞:<a href="tel:+393395734497">+39 3395734497</a> <br/>
+              ☎️:<a href="tel:+0666000316">+0666000316</a>
             </p>
             <p>
-              <a href="mailto:ciao@fermentobistrot.it">ciao@fermentobistrot.it</a>
+              <a href="mailto:fermentoefamily@gmail.com">fermentoefamily@gmail.com</a>
             </p>
           </div>
 
@@ -51,7 +52,7 @@ export default function Footer() {
 
         <div className="legal">
           <p style={{ margin: 0 }}>
-            © {new Date().getFullYear()} Fermento — Caffè · Bistrot · P.IVA IT 03456789012 ·{' '}
+            © {new Date().getFullYear()} Fermento — Caffè · Bistrot · P.IVA IT 15405801000 ·{' '}
             <a href="#">Privacy</a>
           </p>
         </div>
