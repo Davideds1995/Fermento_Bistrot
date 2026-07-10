@@ -196,6 +196,43 @@ function BulkAddModal({ categories, onSave, onClose }: BulkAddModalProps) {
   )
 }
 
+interface DeleteConfirmModalProps {
+  products: Product[]
+  onConfirm: () => void
+  onClose: () => void
+}
+
+/* ── Bulk delete confirmation modal ── */
+function DeleteConfirmModal({ products, onConfirm, onClose }: DeleteConfirmModalProps) {
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-head">
+          <h3>Elimina prodotti</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Chiudi">×</button>
+        </div>
+        <div className="modal-body">
+          <p style={{ margin: 0 }}>Confermi di voler eliminare i seguenti prodotti?</p>
+          <ul className="delete-list">
+            {products.map(p => (
+              <li key={p.id}>
+                <span className="t-name">{p.name}</span>{' '}
+                <span className="muted">— {p.category}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="modal-foot">
+          <button type="button" className="btn btn-ghost" onClick={onClose}>Annulla</button>
+          <button type="button" className="btn btn-danger" onClick={onConfirm}>
+            Elimina {products.length} prodott{products.length === 1 ? 'o' : 'i'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 type ModalState = Product | 'new' | null
 
 /* ── Admin panel ── */
@@ -206,6 +243,8 @@ function Panel() {
   const [modal, setModal] = useState<ModalState>(null)
   const [bulkOpen, setBulkOpen] = useState(false)
   const [catFilter, setCatFilter] = useState('all')
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -315,7 +354,40 @@ function Panel() {
   async function del(id: string) {
     if (!confirm('Eliminare questo prodotto?')) return
     const { error } = await supabase.from('menu_items').delete().eq('id', id)
-    if (!error) setProducts(ps => ps.filter(p => p.id !== id))
+    if (!error) {
+      setProducts(ps => ps.filter(p => p.id !== id))
+      setSelected(s => { const next = new Set(s); next.delete(id); return next })
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelected(s => {
+      const next = new Set(s)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  const allFilteredSelected = filtered.length > 0 && filtered.every(p => selected.has(p.id))
+
+  function toggleSelectAllFiltered() {
+    setSelected(s => {
+      const next = new Set(s)
+      if (allFilteredSelected) filtered.forEach(p => next.delete(p.id))
+      else filtered.forEach(p => next.add(p.id))
+      return next
+    })
+  }
+
+  const selectedProducts = products.filter(p => selected.has(p.id))
+
+  async function deleteSelected() {
+    const ids = selectedProducts.map(p => p.id)
+    const { error } = await supabase.from('menu_items').delete().in('id', ids)
+    if (error) { alert('Errore durante l\'eliminazione: ' + error.message); return }
+    setProducts(ps => ps.filter(p => !selected.has(p.id)))
+    setSelected(new Set())
+    setConfirmDelete(false)
   }
 
   return (
@@ -373,6 +445,18 @@ function Panel() {
           </p>
         </div>
 
+        {/* Bulk actions */}
+        {selected.size > 0 && (
+          <div className="bulk-bar">
+            <span className="count">{selected.size} selezionat{selected.size === 1 ? 'o' : 'i'}</span>
+            <div className="spacer" />
+            <button className="btn btn-ghost btn-sm" onClick={() => setSelected(new Set())}>Deseleziona</button>
+            <button className="btn btn-danger btn-sm" onClick={() => setConfirmDelete(true)}>
+              <Icon name="trash" size={14} /> Elimina selezionati
+            </button>
+          </div>
+        )}
+
         {/* Table */}
         <div className="table-scroll">
           {loading ? (
@@ -383,6 +467,10 @@ function Panel() {
             <table className="table table--menu">
               <thead>
                 <tr>
+                  <th className="check-col">
+                    <input type="checkbox" className="check" checked={allFilteredSelected}
+                      onChange={toggleSelectAllFiltered} aria-label="Seleziona tutti" />
+                  </th>
                   <th>Prodotto</th>
                   <th>Categoria</th>
                   <th>Prezzo</th>
@@ -392,6 +480,10 @@ function Panel() {
               <tbody>
                 {filtered.map(p => (
                   <tr key={p.id}>
+                    <td>
+                      <input type="checkbox" className="check" checked={selected.has(p.id)}
+                        onChange={() => toggleSelect(p.id)} aria-label={`Seleziona ${p.name}`} />
+                    </td>
                     <td>
                       <p className="t-name" style={{ margin: 0 }}>{p.name}</p>
                       {p.description && <p className="t-sub" style={{ margin: 0 }}>{p.description}</p>}
@@ -432,6 +524,14 @@ function Panel() {
           categories={categories}
           onSave={saveBulk}
           onClose={() => setBulkOpen(false)}
+        />
+      )}
+
+      {confirmDelete && (
+        <DeleteConfirmModal
+          products={selectedProducts}
+          onConfirm={deleteSelected}
+          onClose={() => setConfirmDelete(false)}
         />
       )}
     </div>

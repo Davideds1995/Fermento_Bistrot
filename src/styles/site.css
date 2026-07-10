@@ -345,6 +345,19 @@ button { font-family: inherit; cursor: pointer; }
 .toolbar { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap;
   margin-bottom: var(--sp-5); }
 .toolbar .spacer { flex: 1; }
+
+.bulk-bar { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap;
+  margin-bottom: var(--sp-4); padding: var(--sp-3) var(--sp-4);
+  background: rgba(174,90,60,0.06); border: 1px solid rgba(174,90,60,0.25); border-radius: var(--r-sm); }
+.bulk-bar .spacer { flex: 1; }
+.bulk-bar .count { font-size: var(--fs-small); color: var(--ink-700); font-weight: 600; }
+
+.check { width: 18px; height: 18px; accent-color: var(--ink); cursor: pointer; }
+.check-col { width: 40px; }
+
+.delete-list { list-style: none; margin: var(--sp-4) 0 0; padding: 0; max-height: 280px; overflow: auto; }
+.delete-list li { padding: 10px 0; border-bottom: 1px dotted var(--line-strong); }
+.delete-list li:last-child { border-bottom: 0; }
 .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--r-sm); overflow: hidden; }
 .seg button { background: var(--paper-2); border: 0; padding: 9px 16px; font-family: var(--font-engrave);
   text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; font-weight: 600; color: var(--ink-700);
@@ -527,16 +540,17 @@ button { font-family: inherit; cursor: pointer; }
   .table--reservations .t-actions .btn { flex: 1; }
 
   .table--menu tbody tr {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     grid-template-areas:
-      "product product"
-      "cat price"
-      "actions actions";
+      "check product product"
+      "check cat price"
+      "check actions actions";
   }
-  .table--menu td:nth-child(1) { grid-area: product; }
-  .table--menu td:nth-child(2) { grid-area: cat; align-self: center; }
-  .table--menu td:nth-child(3) { grid-area: price; justify-self: end; align-self: center; }
-  .table--menu td:nth-child(4) { grid-area: actions; padding-top: 10px; border-top: 1px solid var(--line); }
+  .table--menu td:nth-child(1) { grid-area: check; align-self: center; }
+  .table--menu td:nth-child(2) { grid-area: product; }
+  .table--menu td:nth-child(3) { grid-area: cat; align-self: center; }
+  .table--menu td:nth-child(4) { grid-area: price; justify-self: end; align-self: center; }
+  .table--menu td:nth-child(5) { grid-area: actions; padding-top: 10px; border-top: 1px solid var(--line); }
   .table--menu .icon-btn { width: 38px; height: 38px; }
 
   /* Modal as bottom sheet */
