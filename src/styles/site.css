@@ -219,6 +219,13 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--ink-900);
 }
 .menu-cat-head .note { color: var(--ink-500); font-style: italic; font-size: var(--fs-small); }
+.menu-subcat + .menu-subcat { margin-top: var(--sp-6); }
+.menu-subcat-title {
+  font-family: var(--font-engrave); font-size: 0.8rem; font-weight: 600;
+  letter-spacing: var(--track-eyebrow); text-transform: uppercase;
+  color: var(--gold-deep); margin-bottom: var(--sp-2);
+  padding-bottom: var(--sp-2); border-bottom: 1px solid var(--line-gold);
+}
 .menu-item {
   display: grid; grid-template-columns: 1fr auto; gap: var(--sp-3) var(--sp-4);
   align-items: baseline; padding: var(--sp-4) 0; border-bottom: 1px dotted var(--line-strong);
@@ -418,6 +425,15 @@ button { font-family: inherit; cursor: pointer; }
   padding: var(--sp-5) var(--sp-6); border-top: 1px solid var(--line); }
 .modal-close { background: none; border: 0; color: var(--ink-500); font-size: 1.5rem; line-height: 1; }
 .modal-close:hover { color: var(--ink-900); }
+.modal-wide { max-width: 880px; }
+
+.bulk-rows { display: flex; flex-direction: column; gap: var(--sp-3); }
+.bulk-row {
+  display: grid;
+  grid-template-columns: 18px 1.3fr 1.5fr 84px 1fr 1fr 34px;
+  gap: var(--sp-2); align-items: center;
+}
+.bulk-row-n { color: var(--ink-500); font-size: var(--fs-small); text-align: center; }
 
 /* ============================================================
    Helpers + responsive
@@ -444,6 +460,8 @@ button { font-family: inherit; cursor: pointer; }
   .site-footer .foot-cols { grid-template-columns: 1fr; gap: var(--sp-5); }
   .table-scroll { overflow-x: auto; }
   .table { min-width: 680px; }
+  .bulk-row { grid-template-columns: 1fr; }
+  .bulk-row-n { display: none; }
 }
 
 /* ============================================================

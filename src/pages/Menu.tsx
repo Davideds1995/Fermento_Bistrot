@@ -4,6 +4,7 @@ import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish } from '../components/Divider'
 import { supabase } from '../lib/supabase'
+import { CATEGORY_SUBCATEGORIES } from '../lib/menuSubcategories'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
 const TAG_LABELS: Record<string, string> = { veg: 'Vegetariano', vegan: 'Vegano' }
@@ -30,6 +31,15 @@ function MenuItemRow({ name, description, price, tags }: MenuItemType) {
 }
 
 function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
+  const subcategories = CATEGORY_SUBCATEGORIES[cat.id]
+  const hasSubcategories = subcategories && cat.items.some(i => i.subcategory)
+
+  const groups = hasSubcategories
+    ? subcategories
+        .map(sub => ({ sub, items: cat.items.filter(i => i.subcategory === sub) }))
+        .filter(g => g.items.length > 0)
+    : [{ sub: null, items: cat.items }]
+
   return (
     <div className="menu-cat" id={cat.id}>
       <div className="menu-cat-head">
@@ -38,9 +48,14 @@ function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
         </div>
         <p className="note">{cat.note}</p>
       </div>
-      <div>
-        {cat.items.map(item => <MenuItemRow key={item.id} {...item} />)}
-      </div>
+      {groups.map(g => (
+        <div className="menu-subcat" key={g.sub ?? 'all'}>
+          {g.sub && <h3 className="menu-subcat-title">{g.sub}</h3>}
+          <div>
+            {g.items.map(item => <MenuItemRow key={item.id} {...item} />)}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -59,7 +74,7 @@ export default function Menu() {
 
       const { data: items } = await supabase
         .from('menu_items')
-        .select('id, category_id, name, description, price, tags')
+        .select('id, category_id, name, description, price, tags, subcategory')
         .order('sort_order')
 
       if (!categories || !items) return
@@ -70,7 +85,7 @@ export default function Menu() {
         note: cat.note,
         items: items
           .filter(i => i.category_id === cat.id)
-          .map(i => ({ id: i.id, name: i.name, description: i.description, price: i.price, tags: i.tags ?? [] })),
+          .map(i => ({ id: i.id, name: i.name, description: i.description, price: i.price, tags: i.tags ?? [], subcategory: i.subcategory ?? null })),
       }))
 
       setMenu(built)

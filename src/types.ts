@@ -4,6 +4,7 @@ export interface MenuItem {
   description: string
   price: string
   tags: string[]
+  subcategory: string | null
 }
 
 export interface MenuCategory {
