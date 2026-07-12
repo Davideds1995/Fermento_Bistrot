@@ -3,29 +3,36 @@
 // sottosezioni nell'ordine in cui devono comparire in pagina.
 export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
   pranzo: [
-    'Antipasti di terra',
     'Antipasti di mare',
+    'Antipasti di terra',
+    'Contorni',
+    'Dolci',
     'Le bruschette',
+    'Le carni',
+    'Panini',
+    'Pinse',
     'Primi della tradizione',
     'Primi di mare',
     'Primi speciali',
-    'Le carni',
     'Secondi di mare',
-    'Panini',
-    'Pinse',
   ],
   vini: [
     'Bianco',
-    'Rosso',
     'Bollicine',
+    'Rosso',
+    'Rosato',
   ],
   drinks:[
     'Amari',
+    'Bevande',
+    'Birre',
+    'Birre alla spina',
+    'Birre artigianali',
     'Gin',
-    'Grappe bianche',
     'Grappe Barrique',
-    'Whisky',
+    'Grappe bianche',
     'Rum',
+    'Whisky',
 
   ]
 }
@@ -34,6 +41,23 @@ export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
 // Es. vini > Rosso > Sicilia
 export const CATEGORY_ZONES: Record<string, string[]> = {
   vini: [
+    'Abruzzo',
+    'Campania',
+    'Francia',
+    'Friuli Venezia Giulia',
+    'Lazio',
+    'Lombardia',
+    'Marche',
+    'Mosella (Germania)',
+    'Piemonte',
+    'Puglia',
+    'Sardegna',
     'Sicilia',
+    'Spagna',
+    'Toscana',
+    'Trentino - Alto Adige',
+    'Umbria',
+    'Veneto',
+
   ],
 }

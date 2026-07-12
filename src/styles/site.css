@@ -221,14 +221,14 @@ button { font-family: inherit; cursor: pointer; }
 .menu-cat-head .note { color: var(--ink-500); font-style: italic; font-size: var(--fs-small); }
 .menu-subcat + .menu-subcat { margin-top: var(--sp-6); }
 .menu-subcat-title {
-  font-family: var(--font-engrave); font-size: 0.8rem; font-weight: 600;
+  font-family: var(--font-engrave); font-size: 1.8rem; font-weight: 600;
   letter-spacing: var(--track-eyebrow); text-transform: uppercase;
   color: var(--gold-deep); margin-bottom: var(--sp-2);
   padding-bottom: var(--sp-2); border-bottom: 1px solid var(--line-gold);
 }
 .menu-zone + .menu-zone { margin-top: var(--sp-4); }
 .menu-zone-title {
-  font-family: var(--font-body); font-size: 0.7rem; font-weight: 600;
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
   letter-spacing: var(--track-eyebrow); text-transform: uppercase;
   color: var(--ink-500); margin: var(--sp-2) 0;
 }

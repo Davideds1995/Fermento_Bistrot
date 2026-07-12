@@ -492,6 +492,7 @@ function Panel() {
                   </th>
                   <th>Prodotto</th>
                   <th>Categoria</th>
+                  <th>Zona</th>
                   <th>Prezzo</th>
                   <th style={{ textAlign: 'right' }}>Azioni</th>
                 </tr>
@@ -509,6 +510,9 @@ function Panel() {
                     </td>
                     <td>
                       <span className="badge badge-cat">{p.category}</span>
+                    </td>
+                    <td>
+                      {p.zona ? <span className="badge badge-cat">{p.zona}</span> : <span className="muted">—</span>}
                     </td>
                     <td className="t-price">€ {p.price}</td>
                     <td className="cell-actions">
