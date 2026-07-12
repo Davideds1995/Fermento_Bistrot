@@ -4,25 +4,14 @@ import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish } from '../components/Divider'
 import { supabase } from '../lib/supabase'
-import { CATEGORY_SUBCATEGORIES } from '../lib/menuSubcategories'
+import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
-const TAG_LABELS: Record<string, string> = { veg: 'Vegetariano', vegan: 'Vegano' }
-
-function DietTag({ tag }: { tag: string }) {
-  return <span className="diet-tag">{TAG_LABELS[tag] ?? tag}</span>
-}
-
-function MenuItemRow({ name, description, price, tags }: MenuItemType) {
+function MenuItemRow({ name, description, price }: MenuItemType) {
   return (
     <div className="menu-item">
       <div>
         <span className="mi-name">{name}</span>
-        {tags.length > 0 && (
-          <span className="mi-tags">
-            {tags.map(t => <DietTag key={t} tag={t} />)}
-          </span>
-        )}
         <p className="mi-desc">{description}</p>
       </div>
       <span className="mi-price">€ {price}</span>
@@ -32,6 +21,7 @@ function MenuItemRow({ name, description, price, tags }: MenuItemType) {
 
 function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
   const subcategories = CATEGORY_SUBCATEGORIES[cat.id]
+  const zones = CATEGORY_ZONES[cat.id]
   const hasSubcategories = subcategories && cat.items.some(i => i.subcategory)
 
   const groups = hasSubcategories
@@ -48,14 +38,26 @@ function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
         </div>
         <p className="note">{cat.note}</p>
       </div>
-      {groups.map(g => (
-        <div className="menu-subcat" key={g.sub ?? 'all'}>
-          {g.sub && <h3 className="menu-subcat-title">{g.sub}</h3>}
-          <div>
-            {g.items.map(item => <MenuItemRow key={item.id} {...item} />)}
+      {groups.map(g => {
+        const hasZones = zones && g.items.some(i => i.zona)
+        const zoneGroups = hasZones
+          ? zones.map(zona => ({ zona, items: g.items.filter(i => i.zona === zona) })).filter(zg => zg.items.length > 0)
+          : [{ zona: null, items: g.items }]
+
+        return (
+          <div className="menu-subcat" key={g.sub ?? 'all'}>
+            {g.sub && <h3 className="menu-subcat-title">{g.sub}</h3>}
+            {zoneGroups.map(zg => (
+              <div className="menu-zone" key={zg.zona ?? 'all'}>
+                {zg.zona && <h4 className="menu-zone-title">{zg.zona}</h4>}
+                <div>
+                  {zg.items.map(item => <MenuItemRow key={item.id} {...item} />)}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
@@ -74,7 +76,7 @@ export default function Menu() {
 
       const { data: items } = await supabase
         .from('menu_items')
-        .select('id, category_id, name, description, price, tags, subcategory')
+        .select('id, category_id, name, description, price, subcategory, zona')
         .order('sort_order')
 
       if (!categories || !items) return
@@ -85,7 +87,7 @@ export default function Menu() {
         note: cat.note,
         items: items
           .filter(i => i.category_id === cat.id)
-          .map(i => ({ id: i.id, name: i.name, description: i.description, price: i.price, tags: i.tags ?? [], subcategory: i.subcategory ?? null })),
+          .map(i => ({ id: i.id, name: i.name, description: i.description, price: i.price, subcategory: i.subcategory ?? null, zona: i.zona ?? null })),
       }))
 
       setMenu(built)

@@ -108,7 +108,7 @@ CREATE TABLE menu_items (
   price       text NOT NULL,
   category_id text NOT NULL,
   category    text NOT NULL,
-  tags        text[] DEFAULT '{}',
+           text[] DEFAULT '{}',
   active      boolean DEFAULT true,
   created_at  timestamptz DEFAULT now()
 );

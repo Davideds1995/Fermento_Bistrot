@@ -29,3 +29,11 @@ export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
 
   ]
 }
+
+// Zone dei vini: sotto-sottocategoria, disponibile solo per la categoria "vini".
+// Es. vini > Rosso > Sicilia
+export const CATEGORY_ZONES: Record<string, string[]> = {
+  vini: [
+    'Sicilia',
+  ],
+}

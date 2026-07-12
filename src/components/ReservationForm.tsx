@@ -88,6 +88,8 @@ export default function ReservationForm() {
     )
   }
 
+const numeri = Array.from({length:50}, (_,i) => i+1)
+  
   return (
     <form onSubmit={submit} noValidate>
       <div className="form-grid">
@@ -120,7 +122,7 @@ export default function ReservationForm() {
         <div className="field">
           <label>Numero di persone <span className="req">*</span></label>
           <select className="select" required value={form.persone} onChange={set('persone')}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+            {numeri.map(n => (
               <option key={n} value={n}>{n} {n === 1 ? 'persona' : 'persone'}</option>
             ))}
           </select>

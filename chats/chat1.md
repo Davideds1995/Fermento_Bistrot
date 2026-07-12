@@ -453,7 +453,7 @@ I extracted the real logo from your PDF — the ornate engraved **FERMENTO** wor
 **The website** (`ui_kits/website/`) — all 6 pages, navigable, with realistic Italian copy:
 - **Home** · hero with the big logo + claim, *Ambiente* gallery, reservation block
 - **Chi siamo** · long written story, pull-quote, values
-- **Menù** · 5 categories with real dishes, € prices, diet tags, sticky index
+- **Menù** · 5 categories with real dishes, € prices, diet  , sticky index
 - **/menu-admin** · password gate → editable product table (aggiungi/modifica/elimina + modal)
 - **/admin** · password gate → reservations table with stats, date/status filters, conferma/cancella
 

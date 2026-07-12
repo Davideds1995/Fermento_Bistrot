@@ -226,6 +226,12 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--gold-deep); margin-bottom: var(--sp-2);
   padding-bottom: var(--sp-2); border-bottom: 1px solid var(--line-gold);
 }
+.menu-zone + .menu-zone { margin-top: var(--sp-4); }
+.menu-zone-title {
+  font-family: var(--font-body); font-size: 0.7rem; font-weight: 600;
+  letter-spacing: var(--track-eyebrow); text-transform: uppercase;
+  color: var(--ink-500); margin: var(--sp-2) 0;
+}
 .menu-item {
   display: grid; grid-template-columns: 1fr auto; gap: var(--sp-3) var(--sp-4);
   align-items: baseline; padding: var(--sp-4) 0; border-bottom: 1px dotted var(--line-strong);
@@ -234,17 +240,11 @@ button { font-family: inherit; cursor: pointer; }
 .menu-item .mi-name {
   font-family: var(--font-body); font-weight: 600; font-size: 1.2rem; color: var(--ink-900);
 }
-.menu-item .mi-tags { display: inline-flex; gap: 6px; margin-left: 8px; vertical-align: middle; }
 .menu-item .mi-desc { grid-column: 1 / 2; color: var(--ink-500); font-style: italic;
   font-size: var(--fs-small); margin-top: 2px; }
 .menu-item .mi-price {
   font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; color: var(--gold-deep);
   white-space: nowrap;
-}
-.diet-tag {
-  font-family: var(--font-engrave); font-size: 0.6rem; letter-spacing: 0.08em;
-  border: 1px solid var(--line-gold); color: var(--gold-deep); border-radius: var(--r-pill);
-  padding: 2px 7px; text-transform: uppercase; line-height: 1.4;
 }
 
 /* category index pills */

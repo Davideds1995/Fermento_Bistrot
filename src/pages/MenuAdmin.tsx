@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import AdminGate from '../components/AdminGate'
 import { supabase } from '../lib/supabase'
-import { CATEGORY_SUBCATEGORIES } from '../lib/menuSubcategories'
+import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
 import type { Product } from '../types'
 
 interface Category { id: string; name: string }
@@ -22,8 +22,8 @@ function ProductModal({ product, categories, onSave, onClose }: ProductModalProp
     name: '', description: '', price: '',
     categoryId: categories[0]?.id ?? '',
     category: categories[0]?.name ?? '',
-    tags: [],
     subcategory: null,
+    zona: null,
   })
 
   function set(k: keyof ProductDraft) {
@@ -38,6 +38,7 @@ function ProductModal({ product, categories, onSave, onClose }: ProductModalProp
       id: form.id ?? `p-${Date.now()}`,
       category: categories.find(c => c.id === form.categoryId)?.name ?? form.categoryId,
       subcategory: CATEGORY_SUBCATEGORIES[form.categoryId] ? (form.subcategory || null) : null,
+      zona: CATEGORY_ZONES[form.categoryId] && form.subcategory ? (form.zona || null) : null,
     })
   }
 
@@ -79,6 +80,15 @@ function ProductModal({ product, categories, onSave, onClose }: ProductModalProp
                   </select>
                 </div>
               )}
+              {CATEGORY_ZONES[form.categoryId] && form.subcategory && (
+                <div className="field">
+                  <label>Zona</label>
+                  <select className="select" value={form.zona ?? ''} onChange={set('zona')}>
+                    <option value="">— Nessuna —</option>
+                    {CATEGORY_ZONES[form.categoryId].map(z => <option key={z} value={z}>{z}</option>)}
+                  </select>
+                </div>
+              )}
             </div>
           </div>
           <div className="modal-foot">
@@ -100,6 +110,7 @@ interface BulkRow {
   price: string
   categoryId: string
   subcategory: string
+  zona: string
 }
 
 function emptyBulkRow(categories: Category[]): BulkRow {
@@ -108,6 +119,7 @@ function emptyBulkRow(categories: Category[]): BulkRow {
     name: '', description: '', price: '',
     categoryId: categories[0]?.id ?? '',
     subcategory: '',
+    zona: '',
   }
 }
 
@@ -163,14 +175,21 @@ function BulkAddModal({ categories, onSave, onClose }: BulkAddModalProps) {
                   <input className="input" placeholder="Prezzo *" value={row.price}
                     onChange={e => patchRow(row.key, { price: e.target.value })} />
                   <select className="select" value={row.categoryId}
-                    onChange={e => patchRow(row.key, { categoryId: e.target.value, subcategory: '' })}>
+                    onChange={e => patchRow(row.key, { categoryId: e.target.value, subcategory: '', zona: '' })}>
                     {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                   {CATEGORY_SUBCATEGORIES[row.categoryId] ? (
                     <select className="select" value={row.subcategory}
-                      onChange={e => patchRow(row.key, { subcategory: e.target.value })}>
+                      onChange={e => patchRow(row.key, { subcategory: e.target.value, zona: '' })}>
                       <option value="">— Sottocategoria —</option>
                       {CATEGORY_SUBCATEGORIES[row.categoryId].map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  ) : <span />}
+                  {CATEGORY_ZONES[row.categoryId] && row.subcategory ? (
+                    <select className="select" value={row.zona}
+                      onChange={e => patchRow(row.key, { zona: e.target.value })}>
+                      <option value="">— Zona —</option>
+                      {CATEGORY_ZONES[row.categoryId].map(z => <option key={z} value={z}>{z}</option>)}
                     </select>
                   ) : <span />}
                   <button type="button" className="icon-btn danger" title="Rimuovi riga"
@@ -250,7 +269,7 @@ function Panel() {
     async function load() {
       const [{ data: cats }, { data: items }] = await Promise.all([
         supabase.from('menu_categories').select('id, name').order('sort_order'),
-        supabase.from('menu_items').select('id, category_id, name, description, price, tags, subcategory').order('sort_order'),
+        supabase.from('menu_items').select('id, category_id, name, description, price, subcategory, zona').order('sort_order'),
       ])
 
       if (cats) setCategories(cats)
@@ -260,8 +279,8 @@ function Panel() {
           name: i.name,
           description: i.description,
           price: i.price,
-          tags: i.tags ?? [],
           subcategory: i.subcategory ?? null,
+          zona: i.zona ?? null,
           categoryId: i.category_id,
           category: cats.find(c => c.id === i.category_id)?.name ?? i.category_id,
         })))
@@ -283,8 +302,8 @@ function Panel() {
           name: data.name,
           description: data.description,
           price: data.price,
-          tags: data.tags,
           subcategory: data.subcategory,
+          zona: data.zona,
           sort_order: products.filter(p => p.categoryId === data.categoryId).length + 1,
         })
         .select()
@@ -304,8 +323,8 @@ function Panel() {
           name: data.name,
           description: data.description,
           price: data.price,
-          tags: data.tags,
           subcategory: data.subcategory,
+          zona: data.zona,
         })
         .eq('id', data.id)
 
@@ -329,8 +348,8 @@ function Panel() {
         name: r.name.trim(),
         description: r.description.trim(),
         price: r.price.trim(),
-        tags: [],
         subcategory: r.subcategory || null,
+        zona: r.zona || null,
         sort_order: already + 1,
       }
     })
@@ -343,8 +362,8 @@ function Panel() {
       name: i.name,
       description: i.description,
       price: i.price,
-      tags: i.tags ?? [],
       subcategory: i.subcategory ?? null,
+      zona: i.zona ?? null,
       categoryId: i.category_id,
       category: categories.find(c => c.id === i.category_id)?.name ?? i.category_id,
     }))])

@@ -3,8 +3,8 @@ export interface MenuItem {
   name: string
   description: string
   price: string
-  tags: string[]
   subcategory: string | null
+  zona: string | null
 }
 
 export interface MenuCategory {
