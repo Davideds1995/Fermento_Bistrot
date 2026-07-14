@@ -2,11 +2,17 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish, Divider } from '../components/Divider'
+import Seo from '../components/Seo'
 import { ABOUT } from '../data/content'
 
 export default function ChiSiamo() {
   return (
     <>
+      <Seo
+        title="Chi siamo — La nostra storia | Fermento Caffè Bistrot Roma"
+        description="La storia di Fermento: da una vecchia drogheria del centro a un caffè-bistrot con lievito madre, marmo di Verona e cucina di mercato, nel cuore di Roma."
+        path="/chi-siamo"
+      />
       <Header />
       <main>
 

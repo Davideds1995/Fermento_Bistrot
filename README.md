@@ -49,6 +49,130 @@ fermento_bistrot/
 
 ---
 
+## SEO
+
+Il sito è una **SPA** (Single Page Application): esiste un solo `index.html`, e React Router
+scambia il contenuto della pagina via JavaScript in base all'URL. Google e Bing eseguono
+JavaScript prima di indicizzare, quindi questo approccio funziona — ma di default un solo
+`<head>` servirebbe per *tutte* le pagine (stesso titolo, stessa descrizione ovunque). Il
+setup SEO risolve questo, più il blocco delle aree riservate.
+
+### File statici
+
+| File | Ruolo |
+|---|---|
+| `public/robots.txt` | Regole di crawling per i motori di ricerca |
+| `public/sitemap.xml` | Elenco delle pagine pubbliche indicizzabili |
+
+**`robots.txt`**
+```
+User-agent: *
+Disallow: /admin
+Disallow: /menu-admin
+Allow: /
+
+Sitemap: https://fermentobistrot.com/sitemap.xml
+```
+`User-agent: *` si applica a tutti i crawler (Googlebot, Bingbot compresi — non serve
+differenziarli a meno di regole diverse per bot specifici). `Disallow` dice di non
+*scansionare* quelle route; `Sitemap` indica dove trovare l'elenco delle pagine da indicizzare.
+
+**`sitemap.xml`** elenca `/`, `/chi-siamo`, `/menu` con priorità e frequenza di aggiornamento
+indicative. È statico: se si aggiunge una nuova pagina pubblica va aggiornato a mano.
+
+> ⚠️ `robots.txt` impedisce la *scansione*, non garantisce da solo che una pagina non venga
+> mai mostrata nei risultati (se qualcuno la linka da fuori, un motore di ricerca può comunque
+> indicizzarla "alla cieca", senza contenuto). Per le pagine admin la barriera che conta
+> davvero è il tag `<meta name="robots" content="noindex, nofollow">`, impostato via
+> `Seo.tsx` — vedi sotto.
+
+### `src/components/Seo.tsx` — come funziona
+
+Componente "invisibile" (ritorna `null`) che ogni pagina monta per riscrivere manualmente i
+tag `<head>` in base a se stessa. Non usa librerie esterne (niente `react-helmet`): è
+manipolazione diretta del DOM tramite `useEffect`.
+
+**1. Perché serve un helper "trova o crea"**
+
+Un tag come `<meta name="description">` esiste già in `index.html`. Se ogni cambio pagina ne
+creasse uno nuovo senza controllare, l'`<head>` finirebbe con decine di meta duplicati — i
+motori di ricerca si confondono su quale usare. La regola è sempre *cerca, se esiste
+aggiorna, altrimenti crea*:
+
+```ts
+function setMeta(attr: 'name' | 'property', key: string, content: string) {
+  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, key)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', content)
+}
+```
+
+`attr` distingue due standard diversi: i meta "normali" e Twitter usano `name="..."`
+(`<meta name="description">`), mentre Open Graph (Facebook/WhatsApp) usa `property="..."`
+(`<meta property="og:title">`). `setLink()` fa lo stesso per i tag `<link>` (usato per il
+`canonical`).
+
+**2. Perché `useEffect` e non codice diretto nel corpo del componente**
+
+Toccare `document.head` è un *side effect*: modifica qualcosa fuori dall'albero React. React
+vuole che questi effetti girino dopo il render, non durante — è la regola base degli hook.
+L'array di dipendenze alla fine (`[title, description, path, noindex, image, jsonLd]`) dice a
+React di rilanciare l'effetto solo quando una di quelle props cambia: è quello che fa
+aggiornare i tag quando si naviga da una pagina all'altra.
+
+**3. Il caso JSON-LD (dati strutturati)**
+
+```ts
+let script = document.head.querySelector<HTMLScriptElement>('script[data-seo-jsonld]')
+if (jsonLd) {
+  if (!script) { /* crea lo <script type="application/ld+json"> */ }
+  script.textContent = JSON.stringify(jsonLd)
+} else if (script) {
+  script.remove()
+}
+```
+
+Stesso pattern "trova o crea", ma con una rimozione esplicita: se la pagina corrente non
+passa `jsonLd` (es. `/chi-siamo`) e prima c'era uno script lasciato da un'altra pagina (es.
+Home), va **rimosso** — altrimenti resterebbe lì, sbagliato per quella pagina. L'attributo
+`data-seo-jsonld="true"` serve solo a riconoscere "il nostro" script tra i tanti presenti
+nell'head.
+
+**4. Uso in una pagina**
+
+```tsx
+<Seo
+  title="Menù — Fermento Caffè Bistrot Roma"
+  description="Scopri il menù di Fermento: colazione, cucina di mercato, taglieri e vini naturali."
+  path="/menu"
+/>
+```
+
+Per le pagine admin si aggiunge `noindex` — questo fa scrivere
+`<meta name="robots" content="noindex, nofollow">` invece di `index, follow`, la vera difesa
+contro l'indicizzazione (vedi nota sopra su `robots.txt`).
+
+**5. Limite da conoscere**
+
+Questo approccio funziona bene per Google e Bing perché entrambi eseguono JavaScript prima di
+indicizzare. Non basterebbe per crawler "primitivi" che leggono solo l'HTML grezzo (alcuni bot
+di anteprima social più datati, alcuni scraper). Per quella garanzia servirebbe SSR o
+prerendering statico (Next.js, Astro, o un prerender build-time) — non necessario per le
+esigenze attuali del sito.
+
+### Dati strutturati (JSON-LD) sulla Home
+
+`Home.tsx` passa a `Seo` un oggetto `JSON_LD` di tipo `CafeOrCoffeeShop` (schema.org) con
+indirizzo, telefono e orari di apertura. È quello che permette a Google di mostrare una scheda
+"locale" arricchita (orari, indirizzo, tipo di attività) nei risultati di ricerca, invece del
+solo link blu.
+
+---
+
 ## Avvio del Frontend (FE)
 
 ```bash

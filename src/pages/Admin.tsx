@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import AdminGate from '../components/AdminGate'
+import Seo from '../components/Seo'
 import { supabase } from '../lib/supabase'
 import { sendReservationEmail } from '../lib/email'
 import { formatDate } from '../data/content'
@@ -329,8 +330,16 @@ function Panel() {
 
 export default function Admin() {
   return (
-    <AdminGate title="Accesso Admin">
-      <Panel />
-    </AdminGate>
+    <>
+      <Seo
+        title="Area riservata — Prenotazioni | Fermento"
+        description="Area riservata di gestione prenotazioni."
+        path="/admin"
+        noindex
+      />
+      <AdminGate title="Accesso Admin">
+        <Panel />
+      </AdminGate>
+    </>
   )
 }

@@ -3,7 +3,34 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Divider } from '../components/Divider'
+import Seo, { SITE_URL } from '../components/Seo'
 import { COPY, ATMOSPHERE } from '../data/content'
+
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'CafeOrCoffeeShop',
+  '@id': SITE_URL,
+  name: 'Fermento — Caffè · Bistrot',
+  image: `${SITE_URL}/assets/calice-e-pane.webp`,
+  url: SITE_URL,
+  telephone: '+39 3395734497',
+  email: 'fermentoefamily@gmail.com',
+  servesCuisine: 'Italiana',
+  priceRange: '€€',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Piazza di Villa Carpegna 38',
+    addressLocality: 'Roma',
+    postalCode: '00165',
+    addressRegion: 'RM',
+    addressCountry: 'IT',
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '07:30', closes: '23:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '08:30', closes: '23:59' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '08:30', closes: '16:00' },
+  ],
+}
 
 interface PlateProps {
   title: string
@@ -35,6 +62,12 @@ function Plate({ title, desc, num, img }: PlateProps) {
 export default function Home() {
   return (
     <>
+      <Seo
+        title="Fermento — Caffè · Bistrot a Roma | Villa Carpegna"
+        description="Dove il tempo lievita lento — caffè di torrefazione artigianale, cucina di mercato e buon vino, dal mattino al calar della sera. Bistrot a Villa Carpegna, Roma."
+        path="/"
+        jsonLd={JSON_LD}
+      />
       <Header />
       <main>
 
@@ -50,13 +83,12 @@ export default function Home() {
               {COPY.est}
             </p>
             <video
-              className="hero-video"
+              className="hero-video-fullwidth"
               src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/video-sfondo.mp4"
               autoPlay
               muted
               loop
               playsInline
-              style={{ borderRadius: '1.25rem', objectFit: 'cover' }}
             />
             <p className="claim" style={{ marginTop: 'var(--sp-6)' }}>
               {COPY.claim}

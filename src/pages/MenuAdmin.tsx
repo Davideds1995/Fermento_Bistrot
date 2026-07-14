@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import AdminGate from '../components/AdminGate'
+import Seo from '../components/Seo'
 import { supabase } from '../lib/supabase'
 import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
 import type { Product } from '../types'
@@ -563,8 +564,16 @@ function Panel() {
 
 export default function MenuAdmin() {
   return (
-    <AdminGate title="Accesso Menù">
-      <Panel />
-    </AdminGate>
+    <>
+      <Seo
+        title="Area riservata — Gestione Menù | Fermento"
+        description="Area riservata di gestione del menù."
+        path="/menu-admin"
+        noindex
+      />
+      <AdminGate title="Accesso Menù">
+        <Panel />
+      </AdminGate>
+    </>
   )
 }

@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ReservationForm from '../components/ReservationForm'
 import { Flourish } from '../components/Divider'
+import Seo from '../components/Seo'
 import { supabase } from '../lib/supabase'
 import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
@@ -106,6 +107,11 @@ export default function Menu() {
 
   return (
     <>
+      <Seo
+        title="Menù — Fermento Caffè Bistrot Roma"
+        description="Scopri il menù di Fermento: colazione, cucina di mercato, taglieri e vini naturali. Bistrot a Villa Carpegna, Roma."
+        path="/menu"
+      />
       <Header />
       <main>
 

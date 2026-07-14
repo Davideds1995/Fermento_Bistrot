@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin
+Disallow: /menu-admin
+Allow: /
+
+Sitemap: https://fermentobistrot.com/sitemap.xml
