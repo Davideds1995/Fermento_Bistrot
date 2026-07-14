@@ -44,10 +44,8 @@ export const ATMOSPHERE: AtmosphereEntry[] = [
 ];
 
 export const HOURS: HoursEntry[] = [
-  { d: "Lunedì", h: "Chiuso" },
-  { d: "Martedì – Venerdì", h: "07:30 – 23:00" },
-  { d: "Sabato", h: "08:30 – 24:00" },
-  { d: "Domenica", h: "08:30 – 16:00" },
+  { d: "Lunedì – Venerdì", h: "06:30 – 15:00 / 18:00 – 00:00" },
+  { d: "Sabato – Domenica", h: "07:00 – 15:00 / 18:00 – 00:00" },
 ];
 
 /* ---- date helpers ---- */

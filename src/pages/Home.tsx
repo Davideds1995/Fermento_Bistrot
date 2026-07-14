@@ -10,7 +10,7 @@ const JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'CafeOrCoffeeShop',
   '@id': SITE_URL,
-  name: 'Fermento — Caffè · Bistrot',
+  name: 'Fermento Caffè Bistrot Roma',
   image: `${SITE_URL}/assets/calice-e-pane.webp`,
   url: SITE_URL,
   telephone: '+39 3395734497',
@@ -63,7 +63,7 @@ export default function Home() {
   return (
     <>
       <Seo
-        title="Fermento — Caffè · Bistrot a Roma | Villa Carpegna"
+        title="Fermento Caffè · Bistrot Roma | Pizza di Villa Carpegna"
         description="Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera. Bistrot a Villa Carpegna, Roma."
         path="/"
         jsonLd={JSON_LD}
