@@ -6,6 +6,7 @@ import ChiSiamo from './pages/ChiSiamo'
 import Menu from './pages/Menu'
 import MenuAdmin from './pages/MenuAdmin'
 import Admin from './pages/Admin'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/menu-admin" element={<MenuAdmin />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

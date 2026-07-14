@@ -168,10 +168,7 @@ export default function Home() {
               <h2>Riserva il tuo tavolo</h2>
               <p className="lead">
                 Compila il modulo e ti confermeremo la disponibilità entro poche ore.
-                Per grandi gruppi o eventi, scrivici a{' '}
-                <a href="mailto:eventi@fermentobistrot.it" style={{ color: 'var(--gold-soft)' }}>
-                  eventi@fermentobistrot.it
-                </a>
+                Per grandi gruppi o eventi, scrivici su Whatsapp o contattaci telefonicamente.
                 .
               </p>
             </div>

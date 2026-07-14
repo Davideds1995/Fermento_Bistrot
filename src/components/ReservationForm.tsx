@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import { supabase } from '../lib/supabase'
 import { sendReservationEmail } from '../lib/email'
@@ -16,9 +17,10 @@ interface FormState {
   ora: string
   persone: string
   note: string
+  privacy: boolean
 }
 
-const empty: FormState = { nome: '', telefono: '', email: '', data: '', ora: '', persone: '2', note: '' }
+const empty: FormState = { nome: '', telefono: '', email: '', data: '', ora: '', persone: '2', note: '', privacy: false }
 
 export default function ReservationForm() {
   const [form, setForm] = useState<FormState>(empty)
@@ -33,6 +35,12 @@ export default function ReservationForm() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+
+    if (!form.privacy) {
+      setError('Devi accettare la privacy policy per inviare la richiesta di prenotazione.')
+      return
+    }
+
     setBusy(true)
     setError('')
 
@@ -131,6 +139,22 @@ const numeri = Array.from({length:50}, (_,i) => i+1)
           <label>Note (allergie, occasioni speciali…)</label>
           <textarea className="textarea" value={form.note} onChange={set('note')}
             placeholder="Es. allergia ai crostacei, seggiolone per bambino, tavolo finestra…" />
+        </div>
+        <div className="field col-2" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
+          <input
+            type="checkbox"
+            id="privacy-consent"
+            checked={form.privacy}
+            onChange={e => setForm(f => ({ ...f, privacy: e.target.checked }))}
+            style={{ marginTop: 4 }}
+          />
+          <label htmlFor="privacy-consent" style={{
+            fontFamily: 'var(--font-body)', textTransform: 'none', letterSpacing: 'normal',
+            fontSize: 'var(--fs-small)', fontWeight: 400,
+          }}>
+            Ho letto e accetto la <Link to="/privacy" target="_blank" rel="noopener noreferrer">privacy policy</Link>{' '}
+            e acconsento al trattamento dei miei dati per la gestione della prenotazione. <span className="req">*</span>
+          </label>
         </div>
         {error && (
           <div className="col-2">

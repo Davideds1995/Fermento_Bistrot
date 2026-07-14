@@ -53,7 +53,7 @@ export default function Footer() {
         <div className="legal">
           <p style={{ margin: 0 }}>
             © {new Date().getFullYear()} Fermento — Caffè · Bistrot · P.IVA IT 15405801000 ·{' '}
-            <a href="#">Privacy</a>
+            <Link to="/privacy">Privacy</Link>
           </p>
         </div>
       </div>
