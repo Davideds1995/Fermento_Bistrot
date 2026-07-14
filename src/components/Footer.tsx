@@ -16,7 +16,7 @@ export default function Footer() {
             <p>Piazza di Villa Carpegna 38</p>
             <p>00165 Roma (RM)</p>
             <p style={{ marginTop: 12 }}>
-              📞:<a href="tel:+393395734497">+39 3395734497</a> <br/>
+              📞:<a href="https://wa.me/393395734497">+39 3395734497</a> <br/>
               ☎️:<a href="tel:+0666000316">+0666000316</a>
             </p>
             <p>

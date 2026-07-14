@@ -7,7 +7,7 @@ import type { HoursEntry, AtmosphereEntry, AboutSection } from '../types'
 
 export const COPY = {
   claim: "Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera.",
-  est: "Fondato nel 2017 · Roma",
+  est: "Fondato nel 2014 · Roma",
   introTitle: "Una bottega del gusto, dal lievito al calice",
   introBody:
     "Fermento nasce dall'idea che le cose buone richiedano tempo. Il pane fermenta con lievito madre per trentasei ore, il caffè riposa dopo la tostatura, il vino attende nella nostra piccola cantina. Vi accogliamo dalla colazione all'aperitivo in una sala dove il marmo, il legno e l'ottone raccontano un'eleganza senza fretta.",
