@@ -142,12 +142,12 @@ export default function Home() {
           <div className="wrap">
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <div className="eyebrow-row">
-                <span className="eyebrow">Atmosfera</span>
+                <span className="eyebrow">La nostra idea di cucina</span>
               </div>
-              <h2>Tre momenti di una giornata da noi</h2>
+              <h2>Tre cose che ci definiscono</h2>
               <p className="lead" style={{ margin: '0 auto', maxWidth: 560 }}>
-                Ogni ora ha il suo rituale: il caffè dell'alba, il pranzo di mercato,
-                l'aperitivo al tramonto.
+                Materie prime scelte con cura, piatti pensati e ripensati in cucina,
+                una cantina che non smette di crescere.
               </p>
             </div>
             <div className="feature-3">

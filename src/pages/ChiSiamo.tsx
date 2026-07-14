@@ -23,10 +23,6 @@ export default function ChiSiamo() {
               <span className="eyebrow">La nostra storia</span>
             </div>
             <h1>Chi siamo</h1>
-            <p className="lead">
-              Una vecchia drogheria, un lievito madre di nome Genoveffa
-              e l'idea che il buono richieda tempo.
-            </p>
             <Flourish small />
           </div>
         </section>
@@ -91,9 +87,7 @@ export default function ChiSiamo() {
               "Le cose buone non si fanno in fretta.
               Si aspettano, si curano, si condividono."
             </blockquote>
-            <p className="eyebrow" style={{ color: 'var(--gold-deep)' }}>
-              — Lucia e Tommaso Bianchi, fondatori
-            </p>
+
           </div>
         </section>
 
@@ -108,8 +102,8 @@ export default function ChiSiamo() {
             </div>
             <div className="feature-3">
               {[
-                { title: 'Filiera corta', body: 'Lavoriamo con contadini, casari e vignaioli dell\'Appennino bolognese. Sappiamo sempre chi ha coltivato quello che vi mettiamo nel piatto.' },
-                { title: 'Fermentazione naturale', body: 'Niente lieviti di birra industriali. Solo Genoveffa — il nostro lievito madre — per il pane, le brioche e tutti i lievitati.' },
+                { title: 'Filiera corta', body: 'Lavoriamo con contadini, casari e vignaioli. Sappiamo sempre chi ha coltivato quello che vi mettiamo nel piatto.' },
+                { title: 'Cantina ampia', body: 'Centinaia di etichette, dai piccoli vignaioli naturali alle grandi denominazioni, per trovare sempre il calice giusto per ogni piatto.' },
                 { title: 'Niente sprechi', body: 'Dagli scarti della panificazione al brodo di bollito: ogni ingrediente viene usato fino all\'ultima possibilità, in cucina e al banco.' },
               ].map(({ title, body }) => (
                 <div key={title} className="framed" style={{ textAlign: 'center', padding: 'var(--sp-6)' }}>

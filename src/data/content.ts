@@ -15,32 +15,32 @@ export const COPY = {
 
 export const ABOUT: AboutSection[] = [
   {
-    h: "Il principio di una fermentazione",
-    p: "Tutto cominciò in una vecchia drogheria del centro, di quelle con gli scaffali fino al soffitto e l'odore di caffè tostato che si attaccava ai cappotti. Era il 2014 quando Lucia e Tommaso Bianchi rilevarono quei quaranta metri quadri di storia bolognese, decisi a farne qualcosa che somigliasse alle botteghe di una volta — ma con la cura di chi ha studiato il mestiere nelle cucine e nei caffè d'Europa.",
+    h: "Un piatto che nasce da ore, non da minuti",
+    p: "La guancia di manzo cuoce a lungo nel suo fondo, finché la carne non cede alla forchetta. La serviamo su una crema di patate, chiusa da una riduzione al vino rosso e rosmarino fresco: è il piatto che racconta meglio la nostra idea di cucina — poca fretta, molta ricerca, un gusto che si costruisce per strati e non per scorciatoie.",
     img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/guancia.webp"
   },
   {
-    h: "Il lievito madre e le ore lente",
-    p: "Il nome non è un vezzo. Fermento è il nostro modo di intendere il cibo: una lunga attesa che trasforma la materia. La nostra pasta madre, battezzata «Genoveffa», ha più anni del locale e viene rinfrescata ogni alba. Da lei nascono i pani, le brioche sfogliate a mano e i lievitati che riempiono la vetrina al mattino. Nulla ha fretta, da noi: nemmeno il caffè, che lasciamo riposare dopo la tostatura prima di macinarlo all'istante.",
+    h: "Un tagliere, tante materie prime da raccontare",
+    p: "Selezioniamo formaggi di piccola produzione — vaccino, pecorino, caciotte stagionate — e li accompagniamo con miele al tartufo, confetture di stagione e noci. Ogni tagliere è un piccolo censimento dei produttori con cui lavoriamo: caseifici a conduzione familiare, apicoltori, chi ancora fa le cose con lentezza.",
     img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/miele.webp"
   },
   {
-    h: "La sala, l'ottone e il marmo",
-    p: "Abbiamo conservato il bancone originale in marmo di Verona e le vetrine in legno di noce, aggiungendo specchi molati, lampade d'ottone e un lungo tavolo conviviale ricavato da una vecchia porta di cascina. Volevamo una sala che invitasse a restare: a leggere il giornale davanti a un cappuccino, a discutere di vino al tramonto, a festeggiare senza guardare l'orologio.",
+    h: "La tavola, fuori, tra amici",
+    p: "Quando il tempo lo permette la sala si allunga in strada: tavoli conditi da piatti pensati per essere condivisi, pomodori e mozzarella di giornata, un bicchiere d'acqua sempre pieno. È l'ora in cui il servizio rallenta e le chiacchiere si allungano — la parte del nostro mestiere che non sta in nessuna ricetta.",
     img: "https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/tavolo.webp"
-  
+
   },
   {
-    h: "Di mercato, di stagione, di vicinato",
-    p: "La cucina cambia con ciò che il mercato offre. Lavoriamo con un piccolo cerchio di contadini, casari e vignaioli dell'Appennino: le uova arrivano da Monghidoro, il Parmigiano da una stalla di trentasei mesi, le verdure dall'orto di Sasso Marconi. Crediamo che un bistrot debba assomigliare al suo quartiere — e nutrirlo, ogni giorno, con la stessa generosità di una tavola di famiglia.",
+    h: "Una cantina che racconta l'Italia, calice dopo calice",
+    p: "Dietro il bancone custodiamo un'ampia selezione di etichette — bollicine, rossi importanti, vini naturali di piccoli produttori — scelta per accompagnare ogni piatto del menù, dall'aperitivo al fine cena. La collezione cresce ogni stagione, guidata da chi il vino lo assaggia prima di metterlo in carta.",
     img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/vini.webp"
   },
 ];
 
 export const ATMOSPHERE: AtmosphereEntry[] = [
-  { n: "I", title: "Il bancone all'alba", desc: "Brioche calde, caffè in tazza grande e il primo sole che entra dalle vetrine.", slot: "atm-1", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/calice-e-pane.webp"},
-  { n: "II", title: "La sala conviviale", desc: "Marmo, ottone e il lungo tavolo di noce dove i tavoli si incontrano.", slot: "atm-2", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/tartare.webp" },
-  { n: "III", title: "L'ora dell'aperitivo", desc: "Calici di naturale, taglieri del nostro casaro e luce dorata di sera.", slot: "atm-3", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/pasta-e-vino.webp" },
+  { n: "I", title: "La cantina, calice dopo calice", desc: "Un rosso in carta, il pane appena scaldato, le luci della strada che si accendono: il vino non è un accessorio, è una selezione che curiamo etichetta per etichetta.", slot: "atm-1", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/calice-e-pane.webp"},
+  { n: "II", title: "La materia prima, prima di tutto", desc: "Una tartare al coltello nasce da un solo ingrediente scelto bene: carne selezionata, tagliata a mano, condimenti che accompagnano senza coprire.", slot: "atm-2", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/tartare.webp" },
+  { n: "III", title: "La ricerca dietro ogni piatto", desc: "Una pappardella al ragù lento, pensata per stare accanto a un grande rosso come il Brunello di Montalcino: ogni accostamento in carta nasce da prove e assaggi in cucina.", slot: "atm-3", img:"https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/pasta-e-vino.webp" },
 ];
 
 export const HOURS: HoursEntry[] = [
