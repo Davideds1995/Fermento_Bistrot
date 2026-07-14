@@ -6,7 +6,7 @@ import type { HoursEntry, AtmosphereEntry, AboutSection } from '../types'
    ============================================================ */
 
 export const COPY = {
-  claim: "Dove il tempo lievita lento — caffè di torrefazione artigianale, cucina di mercato e buon vino, dal mattino al calar della sera.",
+  claim: "Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera.",
   est: "Fondato nel 2017 · Roma",
   introTitle: "Una bottega del gusto, dal lievito al calice",
   introBody:

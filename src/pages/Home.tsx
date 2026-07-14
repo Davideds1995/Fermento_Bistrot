@@ -64,7 +64,7 @@ export default function Home() {
     <>
       <Seo
         title="Fermento — Caffè · Bistrot a Roma | Villa Carpegna"
-        description="Dove il tempo lievita lento — caffè di torrefazione artigianale, cucina di mercato e buon vino, dal mattino al calar della sera. Bistrot a Villa Carpegna, Roma."
+        description="Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera. Bistrot a Villa Carpegna, Roma."
         path="/"
         jsonLd={JSON_LD}
       />
