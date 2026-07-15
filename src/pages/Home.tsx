@@ -123,8 +123,8 @@ export default function Home() {
             <div style={{ display: 'flex', gap: 'var(--sp-8)', justifyContent: 'center', flexWrap: 'wrap', marginTop: 'var(--sp-6)' }}>
               {[
                 { n: '12', l: 'Anni di attività' },
-                { n: '36h', l: 'Di fermentazione' },
-                { n: '100%', l: 'Lievito madre' },
+                { n: 'Materie prime', l: 'Di eccellenza' },
+                { n: 'Vini selezionati', l: 'in cantina' },
               ].map(({ n, l }) => (
                 <div key={l} className="center">
                   <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-h2)', color: 'var(--gold-deep)', margin: 0, lineHeight: 1 }}>
@@ -146,8 +146,7 @@ export default function Home() {
               </div>
               <h2>Tre cose che ci definiscono</h2>
               <p className="lead" style={{ margin: '0 auto', maxWidth: 560 }}>
-                Materie prime scelte con cura, piatti pensati e ripensati in cucina,
-                una cantina che non smette di crescere.
+                Materie prime selezionate con cura, piatti pensati per accompagnare, una cantina che non smette mai di crescere.
               </p>
             </div>
             <div className="feature-3">

@@ -8,9 +8,9 @@ import type { HoursEntry, AtmosphereEntry, AboutSection } from '../types'
 export const COPY = {
   claim: "Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera.",
   est: "Fondato nel 2014 · Roma",
-  introTitle: "Una bottega del gusto, dal lievito al calice",
+  introTitle: "Una bottega del gusto, dal vino all'olio",
   introBody:
-    "Fermento nasce dall'idea che le cose buone richiedano tempo. Il pane fermenta con lievito madre per trentasei ore, il caffè riposa dopo la tostatura, il vino attende nella nostra piccola cantina. Vi accogliamo dalla colazione all'aperitivo in una sala dove il marmo, il legno e l'ottone raccontano un'eleganza senza fretta.",
+    "Fermento nasce dall'idea che le cose buone richiedono tempo. Tradizione e ricerca rendono un'esperienza unica il vostro momento. Vi accogliamo dalla colazione fino alla cena in una sala dove il marco, il legno e l'ottone raccontano un'elenganza senza fretta.",
 };
 
 export const ABOUT: AboutSection[] = [
@@ -46,6 +46,25 @@ export const ATMOSPHERE: AtmosphereEntry[] = [
 export const HOURS: HoursEntry[] = [
   { d: "Lunedì – Venerdì", h: "06:30 – 15:00 / 18:00 – 00:00" },
   { d: "Sabato – Domenica", h: "07:00 – 15:00 / 18:00 – 00:00" },
+];
+
+export const COPERTO = "1,80";
+
+export const ALLERGENS: { n: string; label: string }[] = [
+  { n: "A", label: "Arachidi e derivati" },
+  { n: "B", label: "Frutta a guscio" },
+  { n: "C", label: "Latte e latticini" },
+  { n: "D", label: "Molluschi" },
+  { n: "E", label: "Pesce" },
+  { n: "F", label: "Sesamo e semi" },
+  { n: "G", label: "Soia" },
+  { n: "H", label: "Crostacei" },
+  { n: "I", label: "Glutine" },
+  { n: "L", label: "Lupini" },
+  { n: "M", label: "Senape" },
+  { n: "N", label: "Sedano" },
+  { n: "O", label: "Anidride solforosa" },
+  { n: "P", label: "Uova" },
 ];
 
 /* ---- date helpers ---- */

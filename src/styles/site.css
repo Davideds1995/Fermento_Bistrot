@@ -264,6 +264,33 @@ button { font-family: inherit; cursor: pointer; }
   white-space: nowrap;
 }
 
+/* ---- Allergeni & coperto ---- */
+.allergen-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--sp-3) var(--sp-5); max-width: 760px; margin: 0 auto;
+}
+.allergen-item { display: flex; align-items: center; gap: var(--sp-3); }
+.allergen-num {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--line-strong); color: var(--gold-deep);
+  font-family: var(--font-engrave); font-size: 0.78rem; font-weight: 600;
+  display: grid; place-items: center;
+}
+.allergen-label { font-size: var(--fs-small); color: var(--ink-700); }
+
+.coperto-note {
+  display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
+  gap: var(--sp-3); margin: var(--sp-7) auto 0; padding: var(--sp-5) var(--sp-6);
+  max-width: 520px; border: 1px solid var(--line-gold); border-radius: var(--r-md);
+  background: rgba(183,154,102,0.08);
+}
+.coperto-label {
+  font-family: var(--font-engrave); text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: 0.74rem; font-weight: 600; color: var(--ink-700);
+}
+.coperto-price { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; color: var(--gold-deep); }
+.coperto-desc { flex-basis: 100%; text-align: center; font-size: var(--fs-small); color: var(--ink-500); font-style: italic; }
+
 /* category index pills */
 .cat-nav { display: flex; flex-wrap: wrap; gap: var(--sp-3); justify-content: center; }
 .cat-nav button {

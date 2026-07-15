@@ -6,6 +6,7 @@ import { Flourish } from '../components/Divider'
 import Seo from '../components/Seo'
 import { supabase } from '../lib/supabase'
 import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
+import { ALLERGENS, COPERTO } from '../data/content'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
 function MenuItemRow({ name, description, price }: MenuItemType) {
@@ -166,14 +167,38 @@ export default function Menu() {
           </div>
         </section>
 
-        {/* ── Notes ── */}
-        <section className="section-tight" style={{ background: 'var(--paper-3)', backgroundImage: 'var(--grain)', textAlign: 'center' }}>
+        {/* ── Allergeni & coperto ── */}
+        <section className="section-tight" style={{ background: 'var(--paper-3)', backgroundImage: 'var(--grain)' }}>
           <div className="wrap-narrow">
-            <Flourish flip small />
-            <p style={{ color: 'var(--ink-500)', fontStyle: 'italic', margin: 'var(--sp-5) 0 0' }}>
+            <div className="center" style={{ marginBottom: 'var(--sp-6)' }}>
+              <Flourish flip small />
+              <div className="eyebrow-row">
+                <span className="eyebrow">Informazioni utili</span>
+              </div>
+              <h2>Allergeni &amp; coperto</h2>
+            </div>
+
+            <div className="allergen-grid">
+              {ALLERGENS.map(a => (
+                <div className="allergen-item" key={a.n}>
+                  <span className="allergen-num">{a.n}</span>
+                  <span className="allergen-label">{a.label}</span>
+                </div>
+              ))}
+            </div>
+            <p style={{ color: 'var(--ink-500)', fontStyle: 'italic', textAlign: 'center', margin: 'var(--sp-5) 0 0' }}>
+              I nostri piatti possono contenere uno o più di questi allergeni. Il personale di sala è a disposizione
+              per ogni informazione su ingredienti e preparazioni.
+            </p>
+
+            <div className="coperto-note">
+              <span className="coperto-label">Coperto</span>
+              <span className="coperto-price">€ {COPERTO}</span>
+              <span className="coperto-desc">a persona · pane e servizio inclusi, acqua esclusa</span>
+            </div>
+
+            <p style={{ color: 'var(--ink-500)', fontStyle: 'italic', textAlign: 'center', margin: 'var(--sp-5) 0 0' }}>
               Il menù cambia ogni settimana in base alla disponibilità del mercato e della stagione.
-              Informate il servizio di allergie o intolleranze alimentari.
-              Coperto e acqua non sono inclusi nel prezzo.
             </p>
           </div>
         </section>
