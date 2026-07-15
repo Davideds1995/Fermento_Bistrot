@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
 import { HOURS } from '../data/content'
+import { useLanguage } from '../lib/i18n'
 
 export default function Footer() {
+  const { lang, t } = useLanguage()
+  const hours = HOURS[lang]
+
   return (
     <footer className="site-footer">
       <div className="wrap">
@@ -12,7 +16,7 @@ export default function Footer() {
 
         <div className="foot-cols">
           <div>
-            <h4>Dove siamo</h4>
+            <h4>{t('footer.whereWeAre')}</h4>
             <p>Piazza di Villa Carpegna 38</p>
             <p>00165 Roma (RM)</p>
             <p style={{ marginTop: 12 }}>
@@ -25,8 +29,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4>Orari</h4>
-            {HOURS.map(({ d, h }) => (
+            <h4>{t('footer.hours')}</h4>
+            {hours.map(({ d, h }) => (
               <p key={d}>
                 <span style={{ color: 'rgba(244,236,218,0.5)', fontSize: '0.8rem' }}>{d}</span>
                 <br />
@@ -36,15 +40,15 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4>Il locale</h4>
-            <p><Link to="/chi-siamo">Chi siamo</Link></p>
-            <p><Link to="/menu">Il menù</Link></p>
+            <h4>{t('footer.theVenue')}</h4>
+            <p><Link to="/chi-siamo">{t('footer.about')}</Link></p>
+            <p><Link to="/menu">{t('footer.menu')}</Link></p>
             <p>
               <a href="#prenotazione" onClick={e => {
                 e.preventDefault()
                 document.getElementById('prenotazione')?.scrollIntoView({ behavior: 'smooth' })
               }}>
-                Prenota un tavolo
+                {t('footer.book')}
               </a>
             </p>
           </div>
@@ -53,7 +57,7 @@ export default function Footer() {
         <div className="legal">
           <p style={{ margin: 0 }}>
             © {new Date().getFullYear()} Fermento — Caffè · Bistrot · P.IVA IT 15405801000 ·{' '}
-            <Link to="/privacy">Privacy</Link>
+            <Link to="/privacy">{t('footer.privacy')}</Link>
           </p>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import { supabase } from '../lib/supabase'
 import { sendReservationEmail } from '../lib/email'
+import { useLanguage } from '../lib/i18n'
 
 const TIMES = [
   '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00',
@@ -23,6 +24,7 @@ interface FormState {
 const empty: FormState = { nome: '', telefono: '', email: '', data: '', ora: '', persone: '2', note: '', privacy: false }
 
 export default function ReservationForm() {
+  const { t } = useLanguage()
   const [form, setForm] = useState<FormState>(empty)
   const [sent, setSent] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -37,7 +39,7 @@ export default function ReservationForm() {
     e.preventDefault()
 
     if (!form.privacy) {
-      setError('Devi accettare la privacy policy per inviare la richiesta di prenotazione.')
+      setError(t('reservationForm.privacyRequired'))
       return
     }
 
@@ -57,7 +59,7 @@ export default function ReservationForm() {
 
     setBusy(false)
     if (err) {
-      setError('Si è verificato un errore. Riprova o chiamaci direttamente.')
+      setError(t('reservationForm.genericError'))
     } else {
       setSent(true)
       sendReservationEmail({
@@ -78,18 +80,18 @@ export default function ReservationForm() {
           <Icon name="check" size={20} />
         </div>
         <div>
-          <p className="ct">Prenotazione ricevuta, {form.nome.split(' ')[0]}!</p>
+          <p className="ct">{t('reservationForm.received')}, {form.nome.split(' ')[0]}!</p>
           <p className="cs">
-            Ti confermiamo il tavolo per <strong>{form.persone} persone</strong> il{' '}
-            <strong>{form.data}</strong> alle <strong>{form.ora}</strong>.
-            Riceverai una mail di conferma a <strong>{form.email}</strong>.
+            {t('reservationForm.confirmPrefix')} <strong>{form.persone} {Number(form.persone) === 1 ? t('reservationForm.person') : t('reservationForm.people')}</strong> {t('reservationForm.confirmMiddle')}{' '}
+            <strong>{form.data}</strong> {t('reservationForm.confirmAt')} <strong>{form.ora}</strong>.
+            {' '}{t('reservationForm.confirmSuffix')} <strong>{form.email}</strong>.
           </p>
           <button
             className="btn btn-ghost btn-sm"
             style={{ marginTop: 12, color: 'rgba(244,236,218,0.7)' }}
             onClick={() => { setSent(false); setForm(empty) }}
           >
-            Nuova prenotazione
+            {t('reservationForm.newReservation')}
           </button>
         </div>
       </div>
@@ -102,43 +104,43 @@ const numeri = Array.from({length:50}, (_,i) => i+1)
     <form onSubmit={submit} noValidate>
       <div className="form-grid">
         <div className="field">
-          <label>Nome e cognome <span className="req">*</span></label>
+          <label>{t('reservationForm.fullName')} <span className="req">*</span></label>
           <input className="input" required value={form.nome} onChange={set('nome')}
-            placeholder="Mario Rossi" />
+            placeholder={t('reservationForm.namePlaceholder')} />
         </div>
         <div className="field">
-          <label>Telefono <span className="req">*</span></label>
+          <label>{t('reservationForm.phone')} <span className="req">*</span></label>
           <input className="input" type="tel" required value={form.telefono} onChange={set('telefono')}
             placeholder="+39 333 000 0000" />
         </div>
         <div className="field col-2">
-          <label>Email <span className="req">*</span></label>
+          <label>{t('reservationForm.email')} <span className="req">*</span></label>
           <input className="input" type="email" required value={form.email} onChange={set('email')}
-            placeholder="mario@esempio.it" />
+            placeholder={t('reservationForm.emailPlaceholder')} />
         </div>
         <div className="field">
-          <label>Data <span className="req">*</span></label>
+          <label>{t('reservationForm.date')} <span className="req">*</span></label>
           <input className="input" type="date" required value={form.data} onChange={set('data')} />
         </div>
         <div className="field">
-          <label>Ora <span className="req">*</span></label>
+          <label>{t('reservationForm.time')} <span className="req">*</span></label>
           <select className="select" required value={form.ora} onChange={set('ora')}>
-            <option value="">Scegli orario</option>
-            {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+            <option value="">{t('reservationForm.chooseTime')}</option>
+            {TIMES.map(time => <option key={time} value={time}>{time}</option>)}
           </select>
         </div>
         <div className="field">
-          <label>Numero di persone <span className="req">*</span></label>
+          <label>{t('reservationForm.peopleCount')} <span className="req">*</span></label>
           <select className="select" required value={form.persone} onChange={set('persone')}>
             {numeri.map(n => (
-              <option key={n} value={n}>{n} {n === 1 ? 'persona' : 'persone'}</option>
+              <option key={n} value={n}>{n} {n === 1 ? t('reservationForm.person') : t('reservationForm.people')}</option>
             ))}
           </select>
         </div>
         <div className="field col-2">
-          <label>Note (allergie, occasioni speciali…)</label>
+          <label>{t('reservationForm.notes')}</label>
           <textarea className="textarea" value={form.note} onChange={set('note')}
-            placeholder="Es. allergia ai crostacei, seggiolone per bambino, tavolo finestra…" />
+            placeholder={t('reservationForm.notesPlaceholder')} />
         </div>
         <div className="field col-2" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <input
@@ -152,8 +154,8 @@ const numeri = Array.from({length:50}, (_,i) => i+1)
             fontFamily: 'var(--font-body)', textTransform: 'none', letterSpacing: 'normal',
             fontSize: 'var(--fs-small)', fontWeight: 400,
           }}>
-            Ho letto e accetto la <Link to="/privacy" target="_blank" rel="noopener noreferrer">privacy policy</Link>{' '}
-            e acconsento al trattamento dei miei dati per la gestione della prenotazione. <span className="req">*</span>
+            {t('reservationForm.privacyLabel')} <Link to="/privacy" target="_blank" rel="noopener noreferrer">{t('reservationForm.privacyPolicy')}</Link>{' '}
+            {t('reservationForm.privacyConsent')} <span className="req">*</span>
           </label>
         </div>
         {error && (
@@ -163,7 +165,7 @@ const numeri = Array.from({length:50}, (_,i) => i+1)
         )}
         <div className="col-2">
           <button className="btn btn-gold btn-block" type="submit" disabled={busy}>
-            {busy ? 'Invio in corso…' : 'Richiedi il tuo tavolo'}
+            {busy ? t('reservationForm.sending') : t('reservationForm.submit')}
           </button>
         </div>
       </div>

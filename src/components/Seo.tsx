@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useLanguage } from '../lib/i18n'
 
 export const SITE_URL = 'https://fermentobistrot.com'
 export const SITE_NAME = 'Fermento — Caffè · Bistrot'
@@ -34,6 +35,8 @@ function setLink(rel: string, href: string) {
 }
 
 export default function Seo({ title, description, path, noindex = false, image = DEFAULT_IMAGE, jsonLd }: SeoProps) {
+  const { lang } = useLanguage()
+
   useEffect(() => {
     const url = `${SITE_URL}${path}`
     document.title = title
@@ -44,7 +47,7 @@ export default function Seo({ title, description, path, noindex = false, image =
 
     setMeta('property', 'og:type', 'website')
     setMeta('property', 'og:site_name', SITE_NAME)
-    setMeta('property', 'og:locale', 'it_IT')
+    setMeta('property', 'og:locale', lang === 'en' ? 'en_US' : 'it_IT')
     setMeta('property', 'og:title', title)
     setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', url)
@@ -67,7 +70,7 @@ export default function Seo({ title, description, path, noindex = false, image =
     } else if (script) {
       script.remove()
     }
-  }, [title, description, path, noindex, image, jsonLd])
+  }, [title, description, path, noindex, image, jsonLd, lang])
 
   return null
 }
