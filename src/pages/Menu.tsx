@@ -7,6 +7,7 @@ import Seo from '../components/Seo'
 import { supabase } from '../lib/supabase'
 import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
 import { ALLERGENS, COPERTO } from '../data/content'
+import { useLanguage } from '../lib/i18n'
 import type { MenuCategory as MenuCategoryType, MenuItem as MenuItemType } from '../types'
 
 function MenuItemRow({ name, description, price }: MenuItemType) {
@@ -65,6 +66,8 @@ function MenuCategorySection({ cat }: { cat: MenuCategoryType }) {
 }
 
 export default function Menu() {
+  const { lang, t } = useLanguage()
+  const allergens = ALLERGENS[lang]
   const [menu, setMenu] = useState<MenuCategoryType[]>([])
   const [active, setActive] = useState('')
   const [loading, setLoading] = useState(true)
@@ -109,8 +112,8 @@ export default function Menu() {
   return (
     <>
       <Seo
-        title="Menù — Fermento Caffè Bistrot Roma"
-        description="Scopri il menù di Fermento: colazione, cucina di mercato, taglieri e vini naturali. Bistrot a Villa Carpegna, Roma."
+        title={t('menuPage.seoTitle')}
+        description={t('menuPage.seoDesc')}
         path="/menu"
       />
       <Header />
@@ -120,12 +123,11 @@ export default function Menu() {
         <section className="section-tight" style={{ background: 'var(--paper-3)', backgroundImage: 'var(--grain)', textAlign: 'center' }}>
           <div className="wrap">
             <div className="eyebrow-row">
-              <span className="eyebrow">La nostra cucina</span>
+              <span className="eyebrow">{t('menuPage.ourKitchen')}</span>
             </div>
-            <h1>Il Menù</h1>
+            <h1>{t('menuPage.title')}</h1>
             <p className="lead" style={{ maxWidth: 560, margin: '0 auto var(--sp-6)' }}>
-              Cucina di mercato, stagionale e di vicinato.
-              Le voci cambiano con quello che il mercato offre — ma i classici restano.
+              {t('menuPage.lead')}
             </p>
             <Flourish small />
           </div>
@@ -159,7 +161,7 @@ export default function Menu() {
           <div className="wrap-narrow">
             {loading ? (
               <p style={{ textAlign: 'center', color: 'var(--ink-500)', padding: 'var(--sp-8) 0' }}>
-                Caricamento menù…
+                {t('menuPage.loading')}
               </p>
             ) : activeCategory ? (
               <MenuCategorySection cat={activeCategory} />
@@ -173,13 +175,13 @@ export default function Menu() {
             <div className="center" style={{ marginBottom: 'var(--sp-6)' }}>
               <Flourish flip small />
               <div className="eyebrow-row">
-                <span className="eyebrow">Informazioni utili</span>
+                <span className="eyebrow">{t('menuPage.usefulInfo')}</span>
               </div>
-              <h2>Allergeni &amp; coperto</h2>
+              <h2>{t('menuPage.allergensAndCover')}</h2>
             </div>
 
             <div className="allergen-grid">
-              {ALLERGENS.map(a => (
+              {allergens.map(a => (
                 <div className="allergen-item" key={a.n}>
                   <span className="allergen-num">{a.n}</span>
                   <span className="allergen-label">{a.label}</span>
@@ -187,18 +189,17 @@ export default function Menu() {
               ))}
             </div>
             <p style={{ color: 'var(--ink-500)', fontStyle: 'italic', textAlign: 'center', margin: 'var(--sp-5) 0 0' }}>
-              I nostri piatti possono contenere uno o più di questi allergeni. Il personale di sala è a disposizione
-              per ogni informazione su ingredienti e preparazioni.
+              {t('menuPage.allergensNote')}
             </p>
 
             <div className="coperto-note">
-              <span className="coperto-label">Coperto</span>
+              <span className="coperto-label">{t('menuPage.cover')}</span>
               <span className="coperto-price">€ {COPERTO}</span>
-              <span className="coperto-desc">a persona · pane e servizio inclusi, acqua esclusa</span>
+              <span className="coperto-desc">{t('menuPage.perPerson')}</span>
             </div>
 
             <p style={{ color: 'var(--ink-500)', fontStyle: 'italic', textAlign: 'center', margin: 'var(--sp-5) 0 0' }}>
-              Il menù cambia ogni settimana in base alla disponibilità del mercato e della stagione.
+              {t('menuPage.weeklyChange')}
             </p>
           </div>
         </section>
@@ -209,11 +210,11 @@ export default function Menu() {
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <Flourish flip small />
               <div className="eyebrow-row">
-                <span className="eyebrow">Prenotazioni</span>
+                <span className="eyebrow">{t('menuPage.reservations')}</span>
               </div>
-              <h2>Prenota il tuo tavolo</h2>
+              <h2>{t('menuPage.bookYourTable')}</h2>
               <p className="lead">
-                Assicurati il posto per assaporare la nostra cucina.
+                {t('menuPage.bookLead')}
               </p>
             </div>
             <div className="panel panel-pad framed" style={{

@@ -4,13 +4,30 @@ import ReservationForm from '../components/ReservationForm'
 import { Flourish, Divider } from '../components/Divider'
 import Seo from '../components/Seo'
 import { ABOUT } from '../data/content'
+import { useLanguage } from '../lib/i18n'
+
+const VALUES = {
+  it: [
+    { title: 'Filiera corta', body: 'Lavoriamo con contadini, casari e vignaioli. Sappiamo sempre chi ha coltivato quello che vi mettiamo nel piatto.' },
+    { title: 'Cantina ampia', body: 'Centinaia di etichette, dai piccoli vignaioli naturali alle grandi denominazioni, per trovare sempre il calice giusto per ogni piatto.' },
+    { title: 'Niente sprechi', body: "Dagli scarti della panificazione al brodo di bollito: ogni ingrediente viene usato fino all'ultima possibilità, in cucina e al banco." },
+  ],
+  en: [
+    { title: 'Short supply chain', body: 'We work with farmers, cheesemakers and winemakers. We always know who grew what ends up on your plate.' },
+    { title: 'A wide cellar', body: 'Hundreds of labels, from small natural winemakers to great appellations, to always find the right glass for every dish.' },
+    { title: 'No waste', body: 'From bread scraps to broth: every ingredient is used to its last possibility, in the kitchen and at the counter.' },
+  ],
+} as const
 
 export default function ChiSiamo() {
+  const { lang, t } = useLanguage()
+  const about = ABOUT[lang]
+
   return (
     <>
       <Seo
-        title="Chi siamo — La nostra storia | Fermento Caffè Bistrot Roma"
-        description="La storia di Fermento: da una vecchia drogheria del centro a un caffè-bistrot con lievito madre, marmo di Verona e cucina di mercato, nel cuore di Roma."
+        title={t('about.seoTitle')}
+        description={t('about.seoDesc')}
         path="/chi-siamo"
       />
       <Header />
@@ -20,9 +37,9 @@ export default function ChiSiamo() {
         <section className="section" style={{ background: 'var(--paper-3)', backgroundImage: 'var(--grain)', textAlign: 'center', paddingBottom: 'var(--sp-7)' }}>
           <div className="wrap-narrow">
             <div className="eyebrow-row">
-              <span className="eyebrow">La nostra storia</span>
+              <span className="eyebrow">{t('about.ourStory')}</span>
             </div>
-            <h1>Chi siamo</h1>
+            <h1>{t('about.title')}</h1>
             <Flourish small />
           </div>
         </section>
@@ -30,7 +47,7 @@ export default function ChiSiamo() {
         {/* ── Story sections ── */}
         <section className="section">
           <div className="wrap-narrow">
-            {ABOUT.map(({ h, p, img }, i) => {
+            {about.map(({ h, p, img }, i) => {
               const plate = (
                 <div className="plate plate-square" style={{ minHeight: 240, borderRadius: 'var(--r-md)' }}>
                   {img ? (
@@ -67,7 +84,7 @@ export default function ChiSiamo() {
                       </>
                     )}
                   </div>
-                  {i < ABOUT.length - 1 && <Divider />}
+                  {i < about.length - 1 && <Divider />}
                 </div>
               )
             })}
@@ -84,8 +101,7 @@ export default function ChiSiamo() {
               margin: 'var(--sp-6) 0',
               lineHeight: 1.4,
             }}>
-              "Le cose buone non si fanno in fretta.
-              Si aspettano, si curano, si condividono."
+              {t('about.quote')}
             </blockquote>
 
           </div>
@@ -96,16 +112,12 @@ export default function ChiSiamo() {
           <div className="wrap">
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <div className="eyebrow-row">
-                <span className="eyebrow">I nostri valori</span>
+                <span className="eyebrow">{t('about.ourValues')}</span>
               </div>
-              <h2>Quello in cui crediamo</h2>
+              <h2>{t('about.whatWeBelieve')}</h2>
             </div>
             <div className="feature-3">
-              {[
-                { title: 'Filiera corta', body: 'Lavoriamo con contadini, casari e vignaioli. Sappiamo sempre chi ha coltivato quello che vi mettiamo nel piatto.' },
-                { title: 'Cantina ampia', body: 'Centinaia di etichette, dai piccoli vignaioli naturali alle grandi denominazioni, per trovare sempre il calice giusto per ogni piatto.' },
-                { title: 'Niente sprechi', body: 'Dagli scarti della panificazione al brodo di bollito: ogni ingrediente viene usato fino all\'ultima possibilità, in cucina e al banco.' },
-              ].map(({ title, body }) => (
+              {VALUES[lang].map(({ title, body }) => (
                 <div key={title} className="framed" style={{ textAlign: 'center', padding: 'var(--sp-6)' }}>
                   <h3 style={{ marginBottom: 'var(--sp-3)' }}>{title}</h3>
                   <p style={{ color: 'var(--ink-500)', margin: 0, fontStyle: 'italic' }}>{body}</p>
@@ -121,11 +133,11 @@ export default function ChiSiamo() {
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <Flourish flip small />
               <div className="eyebrow-row">
-                <span className="eyebrow">Prenotazioni</span>
+                <span className="eyebrow">{t('about.reservations')}</span>
               </div>
-              <h2>Vieni a trovarci</h2>
+              <h2>{t('about.comeVisit')}</h2>
               <p className="lead">
-                Riserva il tuo posto alla nostra tavola.
+                {t('about.reserveLead')}
               </p>
             </div>
             <div className="panel panel-pad framed" style={{

@@ -604,3 +604,41 @@ button { font-family: inherit; cursor: pointer; }
   .modal-foot { flex-direction: column-reverse; }
   .modal-foot .btn { width: 100%; }
 }
+
+
+.lang-toggle {
+  width: 34px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.lang-toggle:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.lang-flag {
+  display: inline-block;
+  width: 22px;
+  height: 16px;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.lang-toggle--it {
+  background-image: linear-gradient(90deg, #009246 33.3%, #ffffff 33.3%, #ffffff 66.6%, #ce2b37 66.6%);
+}
+
+.lang-toggle--en {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3Crect width='60' height='30' fill='%2300247d'/%3E%3Cg stroke='%23fff' stroke-width='6'%3E%3Cpath d='M0,0 L60,30 M60,0 L0,30'/%3E%3C/g%3E%3Cg stroke='%23cf142b' stroke-width='4'%3E%3Cpath d='M0,0 L60,30 M60,0 L0,30'/%3E%3C/g%3E%3Crect x='0' y='12' width='60' height='6' fill='%23fff'/%3E%3Crect x='27' y='0' width='6' height='30' fill='%23fff'/%3E%3Crect x='0' y='13' width='60' height='4' fill='%23cf142b'/%3E%3Crect x='28.5' y='0' width='3' height='30' fill='%23cf142b'/%3E%3C/svg%3E");
+}

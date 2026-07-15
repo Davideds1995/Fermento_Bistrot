@@ -5,6 +5,7 @@ import ReservationForm from '../components/ReservationForm'
 import { Divider } from '../components/Divider'
 import Seo, { SITE_URL } from '../components/Seo'
 import { COPY, ATMOSPHERE } from '../data/content'
+import { useLanguage } from '../lib/i18n'
 
 const JSON_LD = {
   '@context': 'https://schema.org',
@@ -60,11 +61,15 @@ function Plate({ title, desc, num, img }: PlateProps) {
 }
 
 export default function Home() {
+  const { lang, t } = useLanguage()
+  const copy = COPY[lang]
+  const atmosphere = ATMOSPHERE[lang]
+
   return (
     <>
       <Seo
-        title="Fermento Caffè · Bistrot Roma | Pizza di Villa Carpegna"
-        description="Dove il tempo lievita lento — cucina ricercata e buon vino, dal mattino al calar della sera. Bistrot a Villa Carpegna, Roma."
+        title={t('home.seoTitle')}
+        description={t('home.seoDesc')}
         path="/"
         jsonLd={JSON_LD}
       />
@@ -80,7 +85,7 @@ export default function Home() {
               className="hero-brand-logo"
             />
             <p className="eyebrow" style={{ margin: 'var(--sp-3) 0 var(--sp-6)' }}>
-              {COPY.est}
+              {copy.est}
             </p>
             <video
               className="hero-video-fullwidth"
@@ -91,7 +96,7 @@ export default function Home() {
               playsInline
             />
             <p className="claim" style={{ marginTop: 'var(--sp-6)' }}>
-              {COPY.claim}
+              {copy.claim}
             </p>
             <div className="hero-actions">
               <a
@@ -102,10 +107,10 @@ export default function Home() {
                   document.getElementById('prenotazione')?.scrollIntoView({ behavior: 'smooth' })
                 }}
               >
-                Prenota un tavolo
+                {t('home.bookTable')}
               </a>
               <Link to="/menu" className="btn btn-outline">
-                Sfoglia il menù
+                {t('home.browseMenu')}
               </Link>
             </div>
           </div>
@@ -115,16 +120,16 @@ export default function Home() {
         <section className="section" style={{ background: 'var(--paper-3)', backgroundImage: 'var(--grain)' }}>
           <div className="wrap-narrow center">
             <div className="eyebrow-row">
-              <span className="eyebrow">Il locale</span>
+              <span className="eyebrow">{t('home.theVenue')}</span>
             </div>
-            <h2>{COPY.introTitle}</h2>
-            <p className="lead">{COPY.introBody}</p>
+            <h2>{copy.introTitle}</h2>
+            <p className="lead">{copy.introBody}</p>
             <Divider />
             <div style={{ display: 'flex', gap: 'var(--sp-8)', justifyContent: 'center', flexWrap: 'wrap', marginTop: 'var(--sp-6)' }}>
               {[
-                { n: '12', l: 'Anni di attività' },
-                { n: 'Materie prime', l: 'Di eccellenza' },
-                { n: 'Vini selezionati', l: 'in cantina' },
+                { n: '12', l: t('home.yearsActive') },
+                { n: t('home.rawMaterials'), l: t('home.ofExcellence') },
+                { n: t('home.selectedWines'), l: t('home.inCellar') },
               ].map(({ n, l }) => (
                 <div key={l} className="center">
                   <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-h2)', color: 'var(--gold-deep)', margin: 0, lineHeight: 1 }}>
@@ -142,15 +147,15 @@ export default function Home() {
           <div className="wrap">
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <div className="eyebrow-row">
-                <span className="eyebrow">La nostra idea di cucina</span>
+                <span className="eyebrow">{t('home.ourIdea')}</span>
               </div>
-              <h2>Tre cose che ci definiscono</h2>
+              <h2>{t('home.threeThings')}</h2>
               <p className="lead" style={{ margin: '0 auto', maxWidth: 560 }}>
-                Materie prime selezionate con cura, piatti pensati per accompagnare, una cantina che non smette mai di crescere.
+                {t('home.threeThingsLead')}
               </p>
             </div>
             <div className="feature-3">
-              {ATMOSPHERE.map(({ n, title, desc, img }) => (
+              {atmosphere.map(({ n, title, desc, img }) => (
                 <Plate key={n} num={n} title={title} desc={desc} img={img} />
               ))}
             </div>
@@ -162,13 +167,11 @@ export default function Home() {
           <div className="wrap-narrow">
             <div className="center" style={{ marginBottom: 'var(--sp-7)' }}>
               <div className="eyebrow-row">
-                <span className="eyebrow">Prenotazioni</span>
+                <span className="eyebrow">{t('home.reservations')}</span>
               </div>
-              <h2>Riserva il tuo tavolo</h2>
+              <h2>{t('home.reserveYourTable')}</h2>
               <p className="lead">
-                Compila il modulo e ti confermeremo la disponibilità entro poche ore.
-                Per grandi gruppi o eventi, scrivici su Whatsapp o contattaci telefonicamente.
-                .
+                {t('home.reserveLead')}
               </p>
             </div>
             <div className="panel panel-pad framed" style={{
