@@ -303,6 +303,39 @@ button { font-family: inherit; cursor: pointer; }
 .cat-nav button.active { background: var(--ink); color: var(--paper-2); border-color: var(--ink); }
 
 /* ============================================================
+   Export PDF modal
+   ============================================================ */
+.export-select-all {
+  background: none; border: 0; color: var(--gold-deep); font-size: var(--fs-small);
+  text-decoration: underline; cursor: pointer; padding: 0; margin-bottom: var(--sp-3);
+}
+.export-cat-list { display: flex; flex-direction: column; gap: var(--sp-2); max-height: 320px; overflow-y: auto; }
+.export-cat-item {
+  display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer;
+}
+.export-cat-item:hover { border-color: var(--line-strong); background: rgba(44,46,53,0.03); }
+.export-cat-item input { accent-color: var(--ink); width: 18px; height: 18px; }
+
+/* ============================================================
+   Print-only PDF sheet (stampa menù selezionato)
+   ============================================================ */
+.print-sheet { display: none; }
+.print-sheet-head { text-align: center; margin-bottom: var(--sp-8); }
+.print-sheet-head img { height: 56px; margin-bottom: var(--sp-4); }
+.print-sheet-head p { color: var(--ink-500); font-style: italic; }
+.print-sheet-footer { margin-top: var(--sp-8); border-top: 1px solid var(--line); padding-top: var(--sp-6); }
+.print-sheet-note { color: var(--ink-500); font-style: italic; text-align: center; margin: var(--sp-5) 0 0; }
+
+@media print {
+  html, body { background: #fff !important; }
+  #root { display: none !important; }
+  .print-sheet { display: block !important; background: #fff; }
+  .menu-cat { break-inside: avoid; page-break-inside: avoid; }
+  .menu-item { break-inside: avoid; }
+}
+
+/* ============================================================
    Atmosphere / feature grids
    ============================================================ */
 .feature-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); }

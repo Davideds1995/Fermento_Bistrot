@@ -94,7 +94,7 @@ export const HOURS: Record<Lang, HoursEntry[]> = {
   ],
 };
 
-export const COPERTO = "1,80";
+export const COPERTO = "2";
 
 export const ALLERGENS: Record<Lang, { n: string; label: string }[]> = {
   it: [
