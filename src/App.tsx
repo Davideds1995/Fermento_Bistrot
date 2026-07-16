@@ -8,6 +8,7 @@ import Menu from './pages/Menu'
 import MenuAdmin from './pages/MenuAdmin'
 import Admin from './pages/Admin'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import NotFound from './pages/NotFound'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/menu-admin" element={<MenuAdmin />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

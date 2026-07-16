@@ -108,6 +108,15 @@ const dict = {
     namePlaceholder: { it: 'Mario Rossi', en: 'John Smith' },
     emailPlaceholder: { it: 'mario@esempio.it', en: 'john@example.com' },
   },
+  notFound: {
+    seoTitle: { it: 'Pagina non trovata | Fermento Caffè Bistrot Roma', en: 'Page not found | Fermento Caffè Bistrot Rome' },
+    seoDesc: { it: 'La pagina che cerchi non esiste o è stata spostata.', en: 'The page you are looking for does not exist or has been moved.' },
+    eyebrow: { it: 'Errore 404', en: 'Error 404' },
+    title: { it: 'Pagina non trovata', en: 'Page not found' },
+    lead: { it: 'Il link che hai seguito potrebbe essere errato, oppure la pagina è stata spostata o non esiste più.', en: 'The link you followed may be broken, or the page has been moved or no longer exists.' },
+    backHome: { it: 'Torna alla home', en: 'Back to home' },
+    viewMenu: { it: 'Sfoglia il menù', en: 'Browse the menu' },
+  },
 } as const
 
 type Dict = typeof dict
