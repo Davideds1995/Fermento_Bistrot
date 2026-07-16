@@ -19,6 +19,8 @@ const ICON_PATHS: Record<IconName, string> = {
   filter: "M22 3H2l8 9.46V19l4 2v-8.54L22 3Z",
   arrowRight: "M5 12h14M13 5l7 7-7 7",
   logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9",
+  download: "M12 3v12 M7 10l5 5 5-5 M4 21h16",
+  star: "M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2Z",
 }
 
 interface IconProps {

@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
 import AdminGate from '../components/AdminGate'
 import Seo from '../components/Seo'
+import ExportMenuModal from '../components/ExportMenuModal'
+import { MenuCategorySection } from '../components/MenuCategorySection'
 import { supabase } from '../lib/supabase'
 import { CATEGORY_SUBCATEGORIES, CATEGORY_ZONES } from '../lib/menuSubcategories'
-import type { Product } from '../types'
+import { ALLERGENS, COPERTO } from '../data/content'
+import { useLanguage } from '../lib/i18n'
+import type { Product, MenuCategory as MenuCategoryType } from '../types'
 
-interface Category { id: string; name: string }
+interface Category { id: string; name: string; note?: string }
 type ProductDraft = Omit<Product, 'id'> & { id?: string }
 
 interface ProductModalProps {
@@ -257,6 +262,8 @@ type ModalState = Product | 'new' | null
 
 /* ── Admin panel ── */
 function Panel() {
+  const { lang, t } = useLanguage()
+  const allergens = ALLERGENS[lang]
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -265,12 +272,19 @@ function Panel() {
   const [catFilter, setCatFilter] = useState('all')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
+  const [printJob, setPrintJob] = useState<{ categories: MenuCategoryType[]; includeAllergens: boolean } | null>(null)
+  const [coperto, setCoperto] = useState(COPERTO)
+  const [copertoInput, setCopertoInput] = useState(COPERTO)
+  const [savingCoperto, setSavingCoperto] = useState(false)
+  const [copertoSaved, setCopertoSaved] = useState(false)
 
   useEffect(() => {
     async function load() {
-      const [{ data: cats }, { data: items }] = await Promise.all([
-        supabase.from('menu_categories').select('id, name').order('sort_order'),
+      const [{ data: cats }, { data: items }, { data: settings }] = await Promise.all([
+        supabase.from('menu_categories').select('id, name, note').order('sort_order'),
         supabase.from('menu_items').select('id, category_id, name, description, price, subcategory, zona').order('sort_order'),
+        supabase.from('site_settings').select('coperto').eq('id', 1).single(),
       ])
 
       if (cats) setCategories(cats)
@@ -286,12 +300,53 @@ function Panel() {
           category: cats.find(c => c.id === i.category_id)?.name ?? i.category_id,
         })))
       }
+      if (settings?.coperto) {
+        setCoperto(settings.coperto)
+        setCopertoInput(settings.coperto)
+      }
       setLoading(false)
     }
     load()
   }, [])
 
+  async function saveCoperto() {
+    const value = copertoInput.trim()
+    if (!value || value === coperto) return
+    setSavingCoperto(true)
+    const { data, error } = await supabase.from('site_settings').update({ coperto: value }).eq('id', 1).select().single()
+    setSavingCoperto(false)
+    if (error || !data) { alert('Errore durante il salvataggio: ' + (error?.message ?? 'riprova.')); return }
+    setCoperto(data.coperto)
+    setCopertoInput(data.coperto)
+    setCopertoSaved(true)
+    setTimeout(() => setCopertoSaved(false), 2000)
+  }
+
   const filtered = catFilter === 'all' ? products : products.filter(p => p.categoryId === catFilter)
+
+  const menuCategories: MenuCategoryType[] = categories.map(cat => ({
+    id: cat.id,
+    name: cat.name,
+    note: cat.note ?? '',
+    items: products.filter(p => p.categoryId === cat.id),
+  }))
+
+  function handleExport(selectedIds: string[], includeAllergens: boolean) {
+    setExportOpen(false)
+    setPrintJob({ categories: menuCategories.filter(c => selectedIds.includes(c.id)), includeAllergens })
+  }
+
+  useEffect(() => {
+    if (!printJob) return
+    const frame = requestAnimationFrame(() => window.print())
+    return () => cancelAnimationFrame(frame)
+  }, [printJob])
+
+  useEffect(() => {
+    function handleAfterPrint() { setPrintJob(null) }
+    window.addEventListener('afterprint', handleAfterPrint)
+    return () => window.removeEventListener('afterprint', handleAfterPrint)
+  }, [])
 
   async function save(data: Product) {
     if (modal === 'new') {
@@ -438,6 +493,9 @@ function Panel() {
             <p className="sub">{products.length} voci · aggiornato oggi</p>
           </div>
           <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
+            <button className="btn btn-outline" onClick={() => setExportOpen(true)} disabled={loading || categories.length === 0}>
+              <Icon name="download" size={16} /> Esporta PDF
+            </button>
             <button className="btn btn-outline" onClick={() => setBulkOpen(true)} disabled={loading}>
               <Icon name="plus" size={16} /> Aggiungi in blocco
             </button>
@@ -476,6 +534,36 @@ function Panel() {
             </button>
           </div>
         )}
+
+        {/* Coperto */}
+        <div className="coperto-edit">
+          <div>
+            <p className="coperto-edit-label">Prezzo del coperto</p>
+            <p className="coperto-edit-hint">Mostrato nel menù pubblico e nei PDF esportati</p>
+          </div>
+          <div className="coperto-edit-form">
+            <span className="coperto-edit-prefix">€</span>
+            <input
+              className="input"
+              value={copertoInput}
+              onChange={e => setCopertoInput(e.target.value)}
+              style={{ width: 100 }}
+              disabled={loading}
+            />
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={saveCoperto}
+              disabled={loading || savingCoperto || copertoInput.trim() === coperto || !copertoInput.trim()}
+            >
+              {savingCoperto ? 'Salvataggio…' : 'Salva'}
+            </button>
+            {copertoSaved && (
+              <span className="coperto-edit-saved">
+                <Icon name="check" size={13} /> Salvato
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* Table */}
         <div className="table-scroll">
@@ -557,6 +645,50 @@ function Panel() {
           onConfirm={deleteSelected}
           onClose={() => setConfirmDelete(false)}
         />
+      )}
+
+      {exportOpen && (
+        <ExportMenuModal
+          categories={menuCategories}
+          onClose={() => setExportOpen(false)}
+          onExport={handleExport}
+        />
+      )}
+
+      {printJob && createPortal(
+        <div className="print-sheet">
+          <div className="wrap-narrow">
+            <div className="print-sheet-head">
+              <img src="https://hrrxbbsjcynbwlmiidfx.supabase.co/storage/v1/object/public/Image/logo-fermento.png" alt="Fermento" />
+              <h1>{t('menuPage.title')}</h1>
+              <p>{t('menuPage.exportPrintSubtitle')}</p>
+            </div>
+
+            {printJob.categories.map(cat => (
+              <MenuCategorySection cat={cat} key={cat.id} />
+            ))}
+
+            {printJob.includeAllergens && (
+              <div className="print-sheet-footer">
+                <div className="allergen-grid">
+                  {allergens.map(a => (
+                    <div className="allergen-item" key={a.n}>
+                      <span className="allergen-num">{a.n}</span>
+                      <span className="allergen-label">{a.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="print-sheet-note">{t('menuPage.allergensNote')}</p>
+                <div className="coperto-note">
+                  <span className="coperto-label">{t('menuPage.cover')}</span>
+                  <span className="coperto-price">€ {coperto}</span>
+                  <span className="coperto-desc">{t('menuPage.perPerson')}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   )

@@ -55,4 +55,4 @@ export interface AboutSection {
 export type IconName =
   | 'plus' | 'edit' | 'trash' | 'check' | 'x' | 'lock' | 'clock'
   | 'calendar' | 'users' | 'phone' | 'mail' | 'mapPin' | 'menu'
-  | 'search' | 'filter' | 'arrowRight' | 'logout'
+  | 'search' | 'filter' | 'arrowRight' | 'logout' | 'download' | 'star'
