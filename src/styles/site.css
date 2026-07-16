@@ -450,6 +450,17 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: var(--sp-4); padding: var(--sp-3) var(--sp-4);
   background: rgba(174,90,60,0.06); border: 1px solid rgba(174,90,60,0.25); border-radius: var(--r-sm); }
 .bulk-bar .spacer { flex: 1; }
+
+.coperto-edit {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-4);
+  margin-bottom: var(--sp-5); padding: var(--sp-4) var(--sp-5);
+  background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.coperto-edit-label { margin: 0; font-weight: 600; color: var(--ink-900); }
+.coperto-edit-hint { margin: 2px 0 0; font-size: var(--fs-small); color: var(--ink-500); font-style: italic; }
+.coperto-edit-form { display: flex; align-items: center; gap: var(--sp-3); }
+.coperto-edit-prefix { color: var(--ink-500); }
+.coperto-edit-saved { display: inline-flex; align-items: center; gap: 4px; color: #4A6B3F; font-size: var(--fs-small); }
 .bulk-bar .count { font-size: var(--fs-small); color: var(--ink-700); font-weight: 600; }
 
 .check { width: 18px; height: 18px; accent-color: var(--ink); cursor: pointer; }

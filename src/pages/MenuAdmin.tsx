@@ -274,12 +274,17 @@ function Panel() {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const [printJob, setPrintJob] = useState<{ categories: MenuCategoryType[]; includeAllergens: boolean } | null>(null)
+  const [coperto, setCoperto] = useState(COPERTO)
+  const [copertoInput, setCopertoInput] = useState(COPERTO)
+  const [savingCoperto, setSavingCoperto] = useState(false)
+  const [copertoSaved, setCopertoSaved] = useState(false)
 
   useEffect(() => {
     async function load() {
-      const [{ data: cats }, { data: items }] = await Promise.all([
+      const [{ data: cats }, { data: items }, { data: settings }] = await Promise.all([
         supabase.from('menu_categories').select('id, name, note').order('sort_order'),
         supabase.from('menu_items').select('id, category_id, name, description, price, subcategory, zona').order('sort_order'),
+        supabase.from('site_settings').select('coperto').eq('id', 1).single(),
       ])
 
       if (cats) setCategories(cats)
@@ -295,10 +300,27 @@ function Panel() {
           category: cats.find(c => c.id === i.category_id)?.name ?? i.category_id,
         })))
       }
+      if (settings?.coperto) {
+        setCoperto(settings.coperto)
+        setCopertoInput(settings.coperto)
+      }
       setLoading(false)
     }
     load()
   }, [])
+
+  async function saveCoperto() {
+    const value = copertoInput.trim()
+    if (!value || value === coperto) return
+    setSavingCoperto(true)
+    const { data, error } = await supabase.from('site_settings').update({ coperto: value }).eq('id', 1).select().single()
+    setSavingCoperto(false)
+    if (error || !data) { alert('Errore durante il salvataggio: ' + (error?.message ?? 'riprova.')); return }
+    setCoperto(data.coperto)
+    setCopertoInput(data.coperto)
+    setCopertoSaved(true)
+    setTimeout(() => setCopertoSaved(false), 2000)
+  }
 
   const filtered = catFilter === 'all' ? products : products.filter(p => p.categoryId === catFilter)
 
@@ -513,6 +535,36 @@ function Panel() {
           </div>
         )}
 
+        {/* Coperto */}
+        <div className="coperto-edit">
+          <div>
+            <p className="coperto-edit-label">Prezzo del coperto</p>
+            <p className="coperto-edit-hint">Mostrato nel menù pubblico e nei PDF esportati</p>
+          </div>
+          <div className="coperto-edit-form">
+            <span className="coperto-edit-prefix">€</span>
+            <input
+              className="input"
+              value={copertoInput}
+              onChange={e => setCopertoInput(e.target.value)}
+              style={{ width: 100 }}
+              disabled={loading}
+            />
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={saveCoperto}
+              disabled={loading || savingCoperto || copertoInput.trim() === coperto || !copertoInput.trim()}
+            >
+              {savingCoperto ? 'Salvataggio…' : 'Salva'}
+            </button>
+            {copertoSaved && (
+              <span className="coperto-edit-saved">
+                <Icon name="check" size={13} /> Salvato
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Table */}
         <div className="table-scroll">
           {loading ? (
@@ -629,7 +681,7 @@ function Panel() {
                 <p className="print-sheet-note">{t('menuPage.allergensNote')}</p>
                 <div className="coperto-note">
                   <span className="coperto-label">{t('menuPage.cover')}</span>
-                  <span className="coperto-price">€ {COPERTO}</span>
+                  <span className="coperto-price">€ {coperto}</span>
                   <span className="coperto-desc">{t('menuPage.perPerson')}</span>
                 </div>
               </div>

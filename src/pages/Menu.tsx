@@ -16,6 +16,7 @@ export default function Menu() {
   const [menu, setMenu] = useState<MenuCategoryType[]>([])
   const [active, setActive] = useState('')
   const [loading, setLoading] = useState(true)
+  const [coperto, setCoperto] = useState(COPERTO)
 
   useEffect(() => {
     async function load() {
@@ -28,6 +29,14 @@ export default function Menu() {
         .from('menu_items')
         .select('id, category_id, name, description, price, subcategory, zona')
         .order('sort_order')
+
+      const { data: settings } = await supabase
+        .from('site_settings')
+        .select('coperto')
+        .eq('id', 1)
+        .single()
+
+      if (settings?.coperto) setCoperto(settings.coperto)
 
       if (!categories || !items) return
 
@@ -139,7 +148,7 @@ export default function Menu() {
 
             <div className="coperto-note">
               <span className="coperto-label">{t('menuPage.cover')}</span>
-              <span className="coperto-price">€ {COPERTO}</span>
+              <span className="coperto-price">€ {coperto}</span>
               <span className="coperto-desc">{t('menuPage.perPerson')}</span>
             </div>
 
