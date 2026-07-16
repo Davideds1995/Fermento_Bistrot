@@ -19,6 +19,9 @@ const dict = {
     menu: { it: 'Il menù', en: 'The menu' },
     book: { it: 'Prenota un tavolo', en: 'Book a table' },
     privacy: { it: 'Privacy', en: 'Privacy' },
+    callUs: { it: 'Chiama', en: 'Call us' },
+    reviewOnTripadvisor: { it: 'Recensiscici su TripAdvisor', en: 'Review us on TripAdvisor' },
+    reviewOnGoogle: { it: 'Recensiscici su Google', en: 'Review us on Google' },
   },
   home: {
     seoTitle: { it: 'Fermento Caffè · Bistrot Roma | Piazza di Villa Carpegna', en: 'Fermento Caffè · Bistrot Rome | Piazza di Villa Carpegna' },

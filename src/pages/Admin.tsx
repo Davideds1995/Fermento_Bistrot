@@ -14,6 +14,70 @@ const STATUS_LABELS: Record<Reservation['status'], string> = {
   cancelled: 'Cancellata',
 }
 
+const GIORNI = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+
+function isoToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function shiftDate(iso: string, days: number) {
+  const [y, m, d] = iso.split('-').map(Number)
+  const date = new Date(y, m - 1, d + days)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+function weekdayLabel(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return GIORNI[new Date(y, m - 1, d).getDay()]
+}
+
+/* ── Day picker card ── */
+function DateNav({ value, onChange }: { value: string; onChange: (iso: string) => void }) {
+  return (
+    <div className="date-nav-card">
+      <button
+        type="button"
+        className="date-nav-arrow"
+        onClick={() => onChange(shiftDate(value || isoToday(), -1))}
+        aria-label="Giorno precedente"
+      >
+        <Icon name="arrowRight" size={16} style={{ transform: 'rotate(180deg)' }} />
+      </button>
+
+      <div className="date-nav-center">
+        <p className="date-nav-weekday">{value ? weekdayLabel(value) : 'Tutte le date'}</p>
+        <p className="date-nav-date">{value ? formatDate(value) : 'Nessun filtro attivo'}</p>
+        <input
+          className="date-nav-input"
+          type="date"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          aria-label="Vai a una data specifica"
+        />
+      </div>
+
+      <button
+        type="button"
+        className="date-nav-arrow"
+        onClick={() => onChange(shiftDate(value || isoToday(), 1))}
+        aria-label="Giorno successivo"
+      >
+        <Icon name="arrowRight" size={16} />
+      </button>
+
+      <div className="date-nav-actions">
+        {value !== isoToday() && (
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => onChange(isoToday())}>Oggi</button>
+        )}
+        {value && (
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => onChange('')}>Vedi tutte le date</button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function StatusBadge({ status }: { status: Reservation['status'] }) {
   return (
     <span className={`badge badge-${status}`}>
@@ -80,7 +144,7 @@ function ResponseModal({ state, onConfirm, onClose }: {
 function Panel() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
-  const [dateFilter, setDateFilter] = useState('')
+  const [dateFilter, setDateFilter] = useState(isoToday())
   const [statusFilter, setStatusFilter] = useState<'all' | Reservation['status']>('all')
   const [responding, setResponding] = useState<RespondingState | null>(null)
 
@@ -103,12 +167,15 @@ function Panel() {
     load()
   }, [])
 
+  const dateFiltered = useMemo(() => {
+    return reservations.filter(r => !dateFilter || r.date === dateFilter)
+  }, [reservations, dateFilter])
+
   const filtered = useMemo(() => {
-    return reservations
-      .filter(r => !dateFilter || r.date === dateFilter)
+    return dateFiltered
       .filter(r => statusFilter === 'all' || r.status === statusFilter)
       .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
-  }, [reservations, dateFilter, statusFilter])
+  }, [dateFiltered, statusFilter])
 
   async function respond(reservation: Reservation, status: 'confirmed' | 'cancelled', message: string) {
     const admin_message = message.trim() || null
@@ -133,11 +200,12 @@ function Panel() {
   }
 
   const stats = useMemo(() => ({
-    total: reservations.length,
-    confirmed: reservations.filter(r => r.status === 'confirmed').length,
-    pending: reservations.filter(r => r.status === 'pending').length,
-    people: reservations.filter(r => r.status !== 'cancelled').reduce((s, r) => s + r.people, 0),
-  }), [reservations])
+    total: dateFiltered.length,
+    confirmed: dateFiltered.filter(r => r.status === 'confirmed').length,
+    pending: dateFiltered.filter(r => r.status === 'pending').length,
+    cancelled: dateFiltered.filter(r => r.status === 'cancelled').length,
+    people: dateFiltered.filter(r => r.status !== 'cancelled').reduce((s, r) => s + r.people, 0),
+  }), [dateFiltered])
 
   const statusOptions: Array<'all' | Reservation['status']> = ['all', 'pending', 'confirmed', 'cancelled']
 
@@ -170,19 +238,26 @@ function Panel() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="stat-row">
+        {/* Day picker */}
+        <DateNav value={dateFilter} onChange={setDateFilter} />
+
+        {/* Stats (riferite al giorno selezionato) */}
+        <div className="stat-row stat-row-5">
           <div className="stat">
             <p className="n">{stats.total}</p>
-            <p className="l">Totali</p>
+            <p className="l">Prenotati</p>
           </div>
           <div className="stat">
             <p className="n" style={{ color: '#4A6B3F' }}>{stats.confirmed}</p>
-            <p className="l">Confermate</p>
+            <p className="l">Confermati</p>
           </div>
           <div className="stat">
             <p className="n" style={{ color: 'var(--gold-deep)' }}>{stats.pending}</p>
             <p className="l">In attesa</p>
+          </div>
+          <div className="stat">
+            <p className="n" style={{ color: 'var(--terracotta)' }}>{stats.cancelled}</p>
+            <p className="l">Cancellati</p>
           </div>
           <div className="stat">
             <p className="n">{stats.people}</p>
@@ -192,21 +267,6 @@ function Panel() {
 
         {/* Toolbar */}
         <div className="toolbar">
-          <div className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: 'var(--sp-3)', margin: 0 }}>
-            <Icon name="calendar" size={16} style={{ color: 'var(--ink-500)', flexShrink: 0 }} />
-            <input
-              className="input input-date"
-              type="date"
-              value={dateFilter}
-              onChange={e => setDateFilter(e.target.value)}
-              style={{ padding: '8px 12px' }}
-            />
-            {dateFilter && (
-              <button className="btn btn-ghost btn-sm" onClick={() => setDateFilter('')}>
-                <Icon name="x" size={13} /> Rimuovi filtro
-              </button>
-            )}
-          </div>
           <div className="seg">
             {statusOptions.map(s => (
               <button key={s} className={statusFilter === s ? 'active' : ''} onClick={() => setStatusFilter(s)}>
