@@ -5,6 +5,7 @@
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
 const FROM_ADDRESS = 'Fermento Bistrot <prenotazioni@fermentobistrot.com>'
 const REPLY_TO = 'fermentoefamily@gmail.com'
+const ADMIN_EMAIL = 'fermentoefamily@gmail.com'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -21,6 +22,8 @@ interface ReservationEmailPayload {
   date: string
   time: string
   people: number | string
+  phone?: string
+  note?: string
   adminMessage?: string | null
 }
 
@@ -75,6 +78,46 @@ function bodyFor(payload: ReservationEmailPayload) {
   `
 }
 
+function adminNotificationBodyFor(payload: ReservationEmailPayload) {
+  const when = `<strong>${formatDate(payload.date)}</strong> alle <strong>${payload.time}</strong>`
+  const note = payload.note?.trim()
+    ? `<p><strong>Note:</strong> ${payload.note.trim()}</p>`
+    : ''
+
+  return `
+    <div style="font-family:Georgia,serif;color:#2b2420;max-width:480px;margin:0 auto;">
+      <h2 style="font-weight:normal;">Nuova prenotazione ricevuta</h2>
+      <p>${when} per <strong>${payload.people} persone</strong>.</p>
+      <p><strong>Nome:</strong> ${payload.name}<br/>
+      <strong>Telefono:</strong> ${payload.phone || '—'}<br/>
+      <strong>Email:</strong> ${payload.email}</p>
+      ${note}
+    </div>
+  `
+}
+
+async function sendAdminNotification(payload: ReservationEmailPayload) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: FROM_ADDRESS,
+      to: [ADMIN_EMAIL],
+      reply_to: payload.email,
+      subject: `Nuova prenotazione — ${payload.name} (${formatDate(payload.date)} ${payload.time})`,
+      html: adminNotificationBodyFor(payload),
+    }),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Resend (notifica admin) ha risposto ${res.status}: ${text}`)
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS })
@@ -108,6 +151,14 @@ Deno.serve(async (req: Request) => {
     if (!res.ok) {
       const text = await res.text()
       throw new Error(`Resend ha risposto ${res.status}: ${text}`)
+    }
+
+    if (payload.type === 'request_received') {
+      try {
+        await sendAdminNotification(payload)
+      } catch (error) {
+        console.error('Invio notifica admin fallito', error)
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
