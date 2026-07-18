@@ -69,6 +69,8 @@ export default function ReservationForm() {
         date: form.data,
         time: form.ora,
         people: form.persone,
+        phone: form.telefono,
+        note: form.note,
       })
     }
   }

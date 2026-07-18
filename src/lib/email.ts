@@ -9,6 +9,8 @@ export interface ReservationEmailPayload {
   date: string
   time: string
   people: number | string
+  phone?: string
+  note?: string
   adminMessage?: string | null
 }
 
