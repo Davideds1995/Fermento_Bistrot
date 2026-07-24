@@ -270,6 +270,7 @@ function Panel() {
   const [modal, setModal] = useState<ModalState>(null)
   const [bulkOpen, setBulkOpen] = useState(false)
   const [catFilter, setCatFilter] = useState('all')
+  const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
@@ -322,7 +323,10 @@ function Panel() {
     setTimeout(() => setCopertoSaved(false), 2000)
   }
 
-  const filtered = catFilter === 'all' ? products : products.filter(p => p.categoryId === catFilter)
+  const query = search.trim().toLowerCase()
+  const filtered = products
+    .filter(p => catFilter === 'all' || p.categoryId === catFilter)
+    .filter(p => !query || p.name.toLowerCase().includes(query))
 
   const menuCategories: MenuCategoryType[] = categories.map(cat => ({
     id: cat.id,
@@ -507,6 +511,21 @@ function Panel() {
 
         {/* Toolbar */}
         <div className="toolbar">
+          <div className="admin-search">
+            <Icon name="search" size={15} />
+            <input
+              type="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Cerca prodotto…"
+              aria-label="Cerca prodotto"
+            />
+            {search && (
+              <button type="button" className="admin-search-clear" aria-label="Cancella ricerca" onClick={() => setSearch('')}>
+                <Icon name="x" size={13} />
+              </button>
+            )}
+          </div>
           <div className="seg">
             {(['all', ...categories.map(c => c.id)]).map(c => {
               const label = c === 'all' ? 'Tutti' : categories.find(m => m.id === c)?.name ?? c

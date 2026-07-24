@@ -118,7 +118,7 @@ export default function Menu() {
                 {t('menuPage.loading')}
               </p>
             ) : activeCategory ? (
-              <MenuCategorySection cat={activeCategory} />
+              <MenuCategorySection key={activeCategory.id} cat={activeCategory} subcategoryTabs={activeCategory.id === 'vini'} />
             ) : null}
           </div>
         </section>
