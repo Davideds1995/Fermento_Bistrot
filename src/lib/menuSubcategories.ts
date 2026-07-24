@@ -42,6 +42,7 @@ export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
 export const CATEGORY_ZONES: Record<string, string[]> = {
   vini: [
     'Abruzzo',
+    'Basilicata',
     'Campania',
     'Francia',
     'Friuli Venezia Giulia',
